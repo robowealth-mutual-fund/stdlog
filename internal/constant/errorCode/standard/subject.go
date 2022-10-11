@@ -1,7 +1,7 @@
 package standard
 
-func (e *ErrorCode) Subject() string {
-	switch Value(e.Value) {
+func (e Value) Subject() string {
+	switch e {
 	case BAD_REQUEST:
 		return "BAD_REQUEST"
 	case INTERNAL:

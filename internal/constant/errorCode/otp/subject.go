@@ -1,7 +1,7 @@
 package otp
 
-func (e *ErrorCode) Subject() string {
-	switch Value(e.Value) {
+func (e Value) Subject() string {
+	switch e {
 	case INCORRECT:
 		return "OTP_INCORRECT"
 	default:
