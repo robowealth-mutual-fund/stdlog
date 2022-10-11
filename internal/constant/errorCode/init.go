@@ -7,8 +7,3 @@ func Code() string {
 func Subject() string {
 	return ""
 }
-
-type Interface interface {
-	Code() string
-	Subject() string
-}
