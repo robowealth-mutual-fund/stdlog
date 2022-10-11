@@ -5,7 +5,7 @@ import (
 )
 
 // Logger is the global logger.
-var logger = std.NewLog()
+var logger = std.New()
 
 func Debug() std.Event {
 	return logger.Debug()
