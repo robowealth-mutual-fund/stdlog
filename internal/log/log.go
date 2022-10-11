@@ -10,7 +10,7 @@ type Logger interface {
 
 type log struct{}
 
-func NewLog() Logger {
+func New() Logger {
 	return &log{}
 }
 
