@@ -1,8 +1,12 @@
 package standard
 
-type Error int
+type Value int
+
+type ErrorCode struct {
+	Value
+}
 
 const (
-	INTERNAL Error = iota
+	INTERNAL Value = iota
 	BAD_REQUEST
 )

@@ -1,7 +1,10 @@
 package otp
 
-type Error int
+type Value int
+type ErrorCode struct {
+	Value
+}
 
 const (
-	INCORRECT Error = iota
+	INCORRECT Value = iota
 )
