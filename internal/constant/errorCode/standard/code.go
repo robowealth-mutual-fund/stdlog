@@ -1,6 +1,6 @@
 package standard
 
-func (e Value) Code() string {
+func (e value) Code() string {
 	switch e {
 	case BAD_REQUEST:
 		return "ROA_500_001_XXX"
