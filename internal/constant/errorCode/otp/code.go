@@ -1,7 +1,7 @@
 package otp
 
-func (e *ErrorCode) Code() string {
-	switch Value(e.Value) {
+func (e Value) Code() string {
+	switch e {
 	case INCORRECT:
 		return "ROA_422_004_XXX"
 	default:

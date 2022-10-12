@@ -1,7 +1,7 @@
 package standard
 
-func (e *ErrorCode) Code() string {
-	switch Value(e.Value) {
+func (e Value) Code() string {
+	switch e {
 	case BAD_REQUEST:
 		return "ROA_500_001_XXX"
 	case INTERNAL:
