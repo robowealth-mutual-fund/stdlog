@@ -27,12 +27,6 @@ func newLogOption(fn func(*logOptions)) *Option {
 	}
 }
 
-func WithGlobalLevel(level Level) *Option {
-	return newLogOption(func(o *logOptions) {
-		o.level = level
-	})
-}
-
 func WithPlatformName(name string) *Option {
 	return newLogOption(func(o *logOptions) {
 		o.platformName = name
@@ -49,8 +43,4 @@ func WithTimestamp(isEnabled bool) *Option {
 	return newLogOption(func(o *logOptions) {
 		o.enableTimestamp = isEnabled
 	})
-}
-
-func WithCustomTimeFieldFormat() {
-
 }

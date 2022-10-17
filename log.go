@@ -3,6 +3,7 @@ package stdlog
 import (
 	"io"
 	"os"
+	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -146,7 +147,7 @@ func setTimeFieldFormat(format TimeFormat) string {
 	case TimeFormatUnixNano:
 		timeFormat = zerolog.TimeFormatUnixNano
 	default:
-		timeFormat = zerolog.TimeFormatUnix
+		timeFormat = time.RFC3339
 	}
 
 	return timeFormat

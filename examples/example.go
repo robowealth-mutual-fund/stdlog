@@ -10,7 +10,6 @@ func main() {
 	// New log instance
 	fluentLog := log.New(os.Stderr,
 		log.WithPlatformName("Odini"),
-		log.WithGlobalLevel(log.WarnLevel),
 		log.WithTimestamp(true),
 	)
 	fluentLog.Warn().Str("some_key", "Hello World").Msg("This is standard log lib!")
@@ -18,6 +17,7 @@ func main() {
 	// Global log instance
 	log.SetGlobalTimestamp()
 	log.SetGlobalPlatformName("Finvest")
-	log.SetTimestampFieldName("timestamp")
+	log.SetGlobalTimestampFieldName("timestamp")
+	log.SetGlobalLogLevel(log.WarnLevel)
 	log.Warn().Msg("Hello test test")
 }
