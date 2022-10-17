@@ -1,8 +1,9 @@
 package stdlog
 
 import (
-	"github.com/robowealth-mutual-fund/stdlog/constant/errorCode"
 	"github.com/rs/zerolog"
+
+	"github.com/robowealth-mutual-fund/stdlog/constant/errorCode"
 )
 
 type event struct {

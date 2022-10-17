@@ -4,8 +4,12 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetTimestamp() {
-	logger.With().Str("service", "test service")
+func SetGlobalTimestamp() {
+	logger.With().Timestamp()
+}
+
+func SetGlobalPlatformName(name string) {
+	logger.With().Str("platform_name", name)
 }
 
 func SetTimestampFieldName(key string) {

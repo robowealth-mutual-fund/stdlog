@@ -29,4 +29,5 @@ type Event interface {
 
 type Context interface {
 	Str(key, val string) Context
+	Timestamp() Context
 }

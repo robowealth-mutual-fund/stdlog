@@ -1,15 +1,15 @@
 package stdlog
 
 import (
-	"fmt"
-	"github.com/rs/zerolog"
 	"io"
 	"os"
+
+	"github.com/rs/zerolog"
 )
 
 // Logger is the global logger.
 var (
-	logger = New(os.Stderr)
+	logger = New(os.Stdout)
 )
 
 func New(w io.Writer, opts ...*Option) Logger {
@@ -43,7 +43,7 @@ func New(w io.Writer, opts ...*Option) Logger {
 	zerolog.SetGlobalLevel(logLv)
 
 	zLogCtx := zerolog.New(w).
-		With().Str("dssd", "121323")
+		With()
 
 	if logOpt.timestampFieldName != "" {
 		zerolog.TimestampFieldName = logOpt.timestampFieldName
@@ -104,7 +104,6 @@ func (l *log) Debug() Event {
 }
 
 func (l *log) Warn() Event {
-	fmt.Printf("%p\n", l.zerologLogger)
 	return &event{zerologEvent: l.zerologLogger.Warn()}
 }
 

@@ -1,7 +1,6 @@
 package stdlog
 
 import (
-	"fmt"
 	"github.com/rs/zerolog"
 )
 
@@ -10,8 +9,11 @@ type context struct {
 }
 
 func (c *context) Str(key, val string) Context {
-	zLogger := c.zerologLogger.With().Str(key, val).Logger()
-	c.zerologLogger = &zLogger
-	fmt.Printf("%p\n", c.zerologLogger)
+	*c.zerologLogger = c.zerologLogger.With().Str(key, val).Logger()
+	return c
+}
+
+func (c *context) Timestamp() Context {
+	*c.zerologLogger = c.zerologLogger.With().Timestamp().Logger()
 	return c
 }
