@@ -1,20 +1,22 @@
 package stdlog
 
 import (
-	std "github.com/robowealth-mutual-fund/stdlog/internal/log"
+	"os"
+
+	"github.com/robowealth-mutual-fund/stdlog/log"
 )
 
 // Logger is the global logger.
-var logger = std.New()
+var logger = log.New(os.Stderr)
 
-func Debug() std.Event {
+func Debug() log.Event {
 	return logger.Debug()
 }
 
-func Info() std.Event {
+func Info() log.Event {
 	return logger.Info()
 }
 
-func Error() std.Event {
+func Error() log.Event {
 	return logger.Error()
 }

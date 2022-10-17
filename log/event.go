@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/robowealth-mutual-fund/stdlog/constant/errorCode"
 	"github.com/rs/zerolog"
 )
 
@@ -8,7 +9,7 @@ type Event interface {
 	Msg(msg string)
 	Msgf(format string, v ...interface{})
 	Interface(key string, v ...interface{})
-	Err(err error)
+	Err(errCode errorCode.Interface)
 	Errs(key string, errs []error)
 }
 
@@ -28,8 +29,8 @@ func (e *event) Interface(key string, v ...interface{}) {
 	e.zerologEvent.Interface(key, v)
 }
 
-func (e *event) Err(err error) {
-	e.zerologEvent.Err(err)
+func (e *event) Err(errCode errorCode.Interface) {
+	e.zerologEvent.Err(errCode)
 }
 
 func (e *event) Errs(key string, errs []error) {
