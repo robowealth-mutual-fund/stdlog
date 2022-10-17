@@ -1,6 +1,6 @@
 package otp
 
-func (e Value) Subject() string {
+func (e value) Subject() string {
 	switch e {
 	case INCORRECT:
 		return "OTP_INCORRECT"
