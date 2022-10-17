@@ -1,4 +1,4 @@
-package log
+package stdlog
 
 // Level defines log levels.
 type Level int8
