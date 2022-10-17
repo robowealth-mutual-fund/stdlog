@@ -5,9 +5,12 @@ type logOptions struct {
 	platformName    string
 	enableTimestamp bool
 
+	// Field name
 	timestampFieldName string
 	levelFieldName     string
 	messageFieldName   string
+
+	timeFieldFormat TimeFormat
 }
 
 type Option struct {
@@ -46,4 +49,8 @@ func WithTimestamp(isEnabled bool) *Option {
 	return newLogOption(func(o *logOptions) {
 		o.enableTimestamp = isEnabled
 	})
+}
+
+func WithCustomTimeFieldFormat() {
+
 }

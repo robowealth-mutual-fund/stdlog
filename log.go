@@ -12,36 +12,20 @@ var (
 	logger = New(os.Stdout)
 )
 
+type log struct {
+	zerologLogger *zerolog.Logger
+}
+
 func New(w io.Writer, opts ...*Option) Logger {
 	logOpt := &logOptions{}
 	for _, opt := range opts {
 		opt.Apply(logOpt)
 	}
 
-	var logLv zerolog.Level
-	switch logOpt.level {
-	case TraceLevel:
-		logLv = zerolog.TraceLevel
-	case DebugLevel:
-		logLv = zerolog.DebugLevel
-	case InfoLevel:
-		logLv = zerolog.InfoLevel
-	case WarnLevel:
-		logLv = zerolog.WarnLevel
-	case ErrorLevel:
-		logLv = zerolog.ErrorLevel
-	case FatalLevel:
-		logLv = zerolog.FatalLevel
-	case PanicLevel:
-		logLv = zerolog.PanicLevel
-	case Disabled:
-		logLv = zerolog.Disabled
-	case NoLevel:
-		logLv = zerolog.NoLevel
-	}
+	zerolog.SetGlobalLevel(setLogLevel(logOpt.level))
+	zerolog.TimeFieldFormat = setTimeFieldFormat(logOpt.timeFieldFormat)
 
-	zerolog.SetGlobalLevel(logLv)
-
+	// New log internal context
 	zLogCtx := zerolog.New(w).
 		With()
 
@@ -58,6 +42,7 @@ func New(w io.Writer, opts ...*Option) Logger {
 	}
 
 	zLog := zLogCtx.Logger()
+
 	return &log{
 		zerologLogger: &zLog,
 	}
@@ -91,10 +76,6 @@ func (l *log) Log() *zerolog.Logger {
 	return l.zerologLogger
 }
 
-type log struct {
-	zerologLogger *zerolog.Logger
-}
-
 func (l *log) Info() Event {
 	return &event{zerologEvent: l.zerologLogger.Info()}
 }
@@ -121,4 +102,52 @@ func (l *log) Panic() Event {
 
 func (l *log) With() Context {
 	return &context{zerologLogger: l.zerologLogger}
+}
+
+func setLogLevel(lv Level) zerolog.Level {
+	var logLv zerolog.Level
+
+	switch lv {
+	case TraceLevel:
+		logLv = zerolog.TraceLevel
+	case DebugLevel:
+		logLv = zerolog.DebugLevel
+	case InfoLevel:
+		logLv = zerolog.InfoLevel
+	case WarnLevel:
+		logLv = zerolog.WarnLevel
+	case ErrorLevel:
+		logLv = zerolog.ErrorLevel
+	case FatalLevel:
+		logLv = zerolog.FatalLevel
+	case PanicLevel:
+		logLv = zerolog.PanicLevel
+	case Disabled:
+		logLv = zerolog.Disabled
+	case NoLevel:
+		logLv = zerolog.NoLevel
+	default:
+		logLv = zerolog.NoLevel
+	}
+
+	return logLv
+}
+
+func setTimeFieldFormat(format TimeFormat) string {
+	var timeFormat string
+
+	switch format {
+	case TimeFormatUnix:
+		timeFormat = zerolog.TimeFormatUnix
+	case TimeFormatUnixMs:
+		timeFormat = zerolog.TimeFormatUnixMs
+	case TimeFormatUnixMicro:
+		timeFormat = zerolog.TimeFormatUnixMicro
+	case TimeFormatUnixNano:
+		timeFormat = zerolog.TimeFormatUnixNano
+	default:
+		timeFormat = zerolog.TimeFormatUnix
+	}
+
+	return timeFormat
 }
