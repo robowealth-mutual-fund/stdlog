@@ -1,8 +1,8 @@
 package standard
 
-type Value int
+type value int
 
 const (
-	INTERNAL Value = iota
+	INTERNAL value = iota
 	BAD_REQUEST
 )
