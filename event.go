@@ -3,7 +3,7 @@ package stdlog
 import (
 	"github.com/rs/zerolog"
 
-	"github.com/robowealth-mutual-fund/stdlog/constant/errorCode"
+	"github.com/robowealth-mutual-fund/stdlog/constant/errors"
 )
 
 type event struct {
@@ -23,8 +23,8 @@ func (e *event) Interface(key string, v ...interface{}) Event {
 	return e
 }
 
-func (e *event) Err(errCode errorCode.Interface) Event {
-	e.zerologEvent.Err(errCode)
+func (e *event) Err(err errors.Interface) Event {
+	e.zerologEvent.Err(err)
 	return e
 }
 
