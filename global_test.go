@@ -1,10 +1,7 @@
 package stdlog
 
 import (
-	"bufio"
-	"fmt"
 	"github.com/stretchr/testify/suite"
-	"os"
 	"testing"
 )
 
@@ -62,12 +59,36 @@ func (s *logTestSuite) TestSetGlobalLogDefaultLevel() {
 
 func (s *logTestSuite) TestSetGlobalLogPlatformName() {
 	SetGlobalPlatformName("test platform")
-	logger.Info().Msg("test platform name")
-	reader := bufio.NewReader(os.Stdout)
-	text, _ := reader.ReadString('\n')
-	fmt.Println("dssdds", text)
 }
 
-func (s *logTestSuite) SetGlobalTimestampFieldName() {
-	SetGlobalPlatformName("test plat form")
+func (s *logTestSuite) TestSetGlobalTimestampFieldName() {
+	SetGlobalTimestampFieldName("test field name")
+}
+
+func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnixMs() {
+	SetGlobalTimeFieldFormat(TimeFormatUnixMs)
+}
+
+func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnix() {
+	SetGlobalTimeFieldFormat(TimeFormatUnix)
+}
+
+func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnixMicro() {
+	SetGlobalTimeFieldFormat(TimeFormatUnixMicro)
+}
+
+func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnixNano() {
+	SetGlobalTimeFieldFormat(TimeFormatUnixNano)
+}
+
+func (s *logTestSuite) TestSetGlobalTimeFieldFormatDefault() {
+	SetGlobalTimeFieldFormat(99)
+}
+
+func (s *logTestSuite) TestSetGlobalLevelFieldName() {
+	SetGlobalLevelFieldName("test")
+}
+
+func (s *logTestSuite) TestSetGlobalMessageFieldName() {
+	SetGlobalMessageFieldName("test")
 }
