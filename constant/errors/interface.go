@@ -1,4 +1,4 @@
-package errorCode
+package error
 
 type Interface interface {
 	Code() string
