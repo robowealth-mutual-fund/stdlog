@@ -24,7 +24,7 @@ func (e *event) Interface(key string, v ...interface{}) Event {
 }
 
 func (e *event) Err(err errorCode.Interface) Event {
-	e.zerologEvent.Err(err)
+	e.zerologEvent.Err(err).Str("subject", err.Subject())
 	return e
 }
 

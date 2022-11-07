@@ -2,6 +2,7 @@ package main
 
 import (
 	log "github.com/robowealth-mutual-fund/stdlog"
+	errCodes "github.com/robowealth-mutual-fund/stdlog/constant/errors/otp"
 )
 
 func main() {
@@ -19,5 +20,6 @@ func main() {
 	//log.SetGlobalLogLevel(log.WarnLevel)
 	//log.Warn().Msg("Hello test test")
 
-	log.Panic().Msg("sdsdsd")
+	log.Error().Err(errCodes.INCORRECT).Msg("error occured")
+	//log.Panic().Msg("sdsdsd")
 }
