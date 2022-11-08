@@ -16,9 +16,9 @@ func main() {
 	optManage := log.NewOptionManager(jsonFieldFormatter).WithPlatformName("Finvest")
 	lg := log.NewLogger(os.Stdout, optManage)
 
-	lg.Debug("sss")
+	lg.Debug("debug level")
 	//New logger
-	lg.LogAttrs("new logger", log.Fields{"test with field": "This is a value"})
+	lg.LogAttrs(log.InfoLevel, "new logger", log.Fields{"test with field": "This is a value"})
 
 	// Global log instance
 	log.Error("some message", nil)
