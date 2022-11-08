@@ -4,7 +4,7 @@ import "fmt"
 
 func (e value) Error() string {
 	switch e {
-	case Incorrect:
+	case INCORRECT:
 		return fmt.Sprintf("ROA_422_004_XXX %s", e.Subject())
 	default:
 		return "UNKNOWN"

@@ -2,21 +2,21 @@ package standard
 
 func (e value) Error() string {
 	switch e {
-	case BadRequest:
+	case BAD_REQUEST:
 		return "ROA_400_001_XXX"
-	case Unauthorized:
+	case UNAUTHORIZED:
 		return "ROA_401_001_XXX"
-	case Forbidden:
+	case FORBIDDEN:
 		return "ROA_403_001_XXX"
-	case NotFound:
+	case NOT_FOUND:
 		return "ROA_404_001_XXX"
-	case UnsupportedMediaType:
+	case UNSUPPORTED_MEDIA_TYPE:
 		return "ROA_415_001_XXX"
-	case UnprocessableEntity:
+	case UNPROCESSABLE_ENTITY:
 		return "ROA_422_001_XXX"
-	case InternalServerError:
+	case INTERNAL_SERVER_ERROR:
 		return "ROA_500_001_XXX"
-	case GatewayTimeout:
+	case GATEWAY_TIMEOUT:
 		return "ROA_504_001_XXX"
 	default:
 		return "UNKNOWN"

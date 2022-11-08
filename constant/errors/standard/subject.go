@@ -2,21 +2,21 @@ package standard
 
 func (e value) Subject() string {
 	switch e {
-	case BadRequest:
+	case BAD_REQUEST:
 		return "BAD_REQUEST"
-	case Unauthorized:
-		return "Unauthorized"
-	case Forbidden:
-		return "Forbidden"
-	case NotFound:
+	case UNAUTHORIZED:
+		return "UNAUTHORIZED"
+	case FORBIDDEN:
+		return "FORBIDDEN"
+	case NOT_FOUND:
 		return "NOT_FOUND"
-	case UnsupportedMediaType:
+	case UNSUPPORTED_MEDIA_TYPE:
 		return "UNSUPPORTED_MEDIA_TYPE"
-	case UnprocessableEntity:
+	case UNPROCESSABLE_ENTITY:
 		return "UNPROCESSABLE_ENTITY"
-	case InternalServerError:
+	case INTERNAL_SERVER_ERROR:
 		return "INTERNAL_SERVER_ERROR"
-	case GatewayTimeout:
+	case GATEWAY_TIMEOUT:
 		return "GATEWAY_TIMEOUT"
 	default:
 		return "UNKNOWN"
