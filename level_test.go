@@ -17,43 +17,43 @@ func TestLevelTestSuite(t *testing.T) {
 }
 
 func (s *levelTestSuite) TestLevelDebugString() {
-	assert.Equal(s.T(), "DEBUG", DebugLevel.String())
+	assert.Equal(s.T(), "DEBUG", DEBUG_LEVEL.String())
 }
 
 func (s *levelTestSuite) TestLevelInfoString() {
-	assert.Equal(s.T(), "INFO", InfoLevel.String())
+	assert.Equal(s.T(), "INFO", INFO_LEVEL.String())
 }
 
 func (s *levelTestSuite) TestLevelWarnString() {
-	assert.Equal(s.T(), "WARN", WarnLevel.String())
+	assert.Equal(s.T(), "WARN", WARN_LEVEL.String())
 }
 
 func (s *levelTestSuite) TestLevelErrorString() {
-	assert.Equal(s.T(), "ERROR", ErrorLevel.String())
+	assert.Equal(s.T(), "ERROR", ERROR_LEVEL.String())
 }
 
 func (s *levelTestSuite) TestLevelSilentString() {
-	assert.Equal(s.T(), "SILENT", SilentLevel.String())
+	assert.Equal(s.T(), "SILENT", SILENT_LEVEL.String())
 }
 
 func (s *levelTestSuite) TestGetDebugLevel() {
-	assert.Equal(s.T(), slog.Level(DebugLevel), DebugLevel.Level())
+	assert.Equal(s.T(), slog.Level(DEBUG_LEVEL), DEBUG_LEVEL.Level())
 }
 
 func (s *levelTestSuite) TestGetInfoLevel() {
-	assert.Equal(s.T(), slog.Level(InfoLevel), InfoLevel.Level())
+	assert.Equal(s.T(), slog.Level(INFO_LEVEL), INFO_LEVEL.Level())
 }
 
 func (s *levelTestSuite) TestGetWarnLevel() {
-	assert.Equal(s.T(), slog.Level(WarnLevel), WarnLevel.Level())
+	assert.Equal(s.T(), slog.Level(WARN_LEVEL), WARN_LEVEL.Level())
 }
 
 func (s *levelTestSuite) TestGetErrorLevel() {
-	assert.Equal(s.T(), slog.Level(ErrorLevel), ErrorLevel.Level())
+	assert.Equal(s.T(), slog.Level(ERROR_LEVEL), ERROR_LEVEL.Level())
 }
 
 func (s *levelTestSuite) TestGetSilentLevel() {
-	assert.Equal(s.T(), slog.Level(SilentLevel), SilentLevel.Level())
+	assert.Equal(s.T(), slog.Level(SILENT_LEVEL), SILENT_LEVEL.Level())
 }
 
 func (s *levelTestSuite) TestStringNotReturnBase() {

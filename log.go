@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	logLevel = InfoLevel
+	logLevel = INFO_LEVEL
 	log      = slog.New(slog.HandlerOptions{Level: logLevel}.
 			NewJSONHandler(os.Stdout))
 )

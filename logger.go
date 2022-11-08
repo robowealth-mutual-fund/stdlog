@@ -22,10 +22,10 @@ type Log struct {
 func NewLogger(w io.Writer, optManager *OptionManager) Logger {
 	var attrs []slog.Attr
 
-	if !optManager.DisabledPlatformNameKey() {
+	if !optManager.DisabledPlatformNameKey {
 		attrs = append(attrs, slog.Any(
-			optManager.jsonFieldManager.PlatformNameKeyWithDefault(),
-			optManager.PlatformName(),
+			optManager.JSONFieldFormatter.PlatformNameKeyWithDefault(),
+			optManager.PlatformName,
 		))
 	}
 

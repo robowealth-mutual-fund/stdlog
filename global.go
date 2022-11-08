@@ -8,43 +8,24 @@ import (
 )
 
 type GlobalSetting struct {
-	writer       io.Writer
-	level        Level
-	platformName string
-}
-
-func NewGlobalSetting() *GlobalSetting {
-	return &GlobalSetting{}
-}
-
-func (gs *GlobalSetting) WithWriter(w io.Writer) *GlobalSetting {
-	gs.writer = w
-	return gs
-}
-
-func (gs *GlobalSetting) WithLevel(level Level) *GlobalSetting {
-	gs.level = level
-	return gs
-}
-
-func (gs *GlobalSetting) WithPlatformName(name string) *GlobalSetting {
-	gs.platformName = name
-	return gs
+	Writer       io.Writer
+	Level        Level
+	PlatformName string
 }
 
 func (gs *GlobalSetting) Configure() {
 	var attrs []slog.Attr
 
-	if gs.platformName != "" {
-		attrs = append(attrs, slog.Any(platformName, gs.platformName))
+	if gs.PlatformName != "" {
+		attrs = append(attrs, slog.Any(PLATFORM_NAME_KEY, gs.PlatformName))
 	}
 
-	logLevel = gs.level
+	logLevel = gs.Level
 
-	if gs.writer == nil {
-		gs.writer = os.Stdout
+	if gs.Writer == nil {
+		gs.Writer = os.Stdout
 	}
 
-	h := slog.HandlerOptions{Level: gs.level}.NewJSONHandler(gs.writer).WithAttrs(attrs)
+	h := slog.HandlerOptions{Level: gs.Level}.NewJSONHandler(gs.Writer).WithAttrs(attrs)
 	log = slog.New(h)
 }

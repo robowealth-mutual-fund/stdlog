@@ -1,60 +1,27 @@
 package stdlog
 
 const (
-	platformName = "platform_name"
+	PLATFORM_NAME_KEY = "platform_name"
 )
 
 type OptionManager struct {
-	disabledPlatformNameKey bool
-	platformName            string
-	jsonFieldManager        *JSONFieldFormatter
+	DisabledPlatformNameKey bool
+	PlatformName            string
+	JSONFieldFormatter      *JSONFieldFormatter
 }
 
-func NewOptionManager(jsonfieldManager *JSONFieldFormatter) *OptionManager {
-	return &OptionManager{
-		jsonFieldManager: jsonfieldManager,
-	}
-}
-
-func (om *OptionManager) WithDisabledPlatformNameKey() *OptionManager {
-	om.disabledPlatformNameKey = true
+func (om *OptionManager) WithJSONFieldFormatter(jsonFieldFormatter *JSONFieldFormatter) *OptionManager {
+	om.JSONFieldFormatter = jsonFieldFormatter
 	return om
-}
-
-func (om *OptionManager) DisabledPlatformNameKey() bool {
-	return om.disabledPlatformNameKey
-}
-
-func (om *OptionManager) WithPlatformName(name string) *OptionManager {
-	om.platformName = name
-	return om
-}
-
-func (om *OptionManager) PlatformName() string {
-	return om.platformName
 }
 
 type JSONFieldFormatter struct {
-	platformNameKey  string
-	timestampNameKey string
+	PlatformNameKey string
 }
 
-func NewJSONFieldFormatter() *JSONFieldFormatter {
-	return &JSONFieldFormatter{}
-}
-
-func (ff *JSONFieldFormatter) WithPlatformNameKey(name string) *JSONFieldFormatter {
-	ff.platformNameKey = name
-	return ff
-}
-
-func (ff *JSONFieldFormatter) PlatformNameKey() string {
-	return ff.platformNameKey
-}
-
-func (ff *JSONFieldFormatter) PlatformNameKeyWithDefault() string {
-	if ff.PlatformNameKey() != "" {
-		return ff.platformNameKey
+func (jff *JSONFieldFormatter) PlatformNameKeyWithDefault() string {
+	if jff.PlatformNameKey != "" {
+		return jff.PlatformNameKey
 	}
-	return platformName
+	return PLATFORM_NAME_KEY
 }

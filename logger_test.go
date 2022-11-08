@@ -20,15 +20,21 @@ func TestLoggerTestSuite(t *testing.T) {
 }
 
 func (s *loggerTestSuite) TestNewLogger() {
-	lg := NewLogger(os.Stdout, NewOptionManager(NewJSONFieldFormatter()))
+	lg := NewLogger(os.Stdout, &OptionManager{
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	assert.NotNil(s.T(), lg)
 }
 
 func (s *loggerTestSuite) TestNewLogDebugLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithLevel(DebugLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Debug("test")
 
 	var result map[string]interface{}
@@ -59,7 +65,10 @@ func (s *loggerTestSuite) TestNewLogDebugLevel() {
 func (s *loggerTestSuite) TestNewLogInfoLevel() {
 	var buf bytes.Buffer
 
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -90,7 +99,10 @@ func (s *loggerTestSuite) TestNewLogInfoLevel() {
 func (s *loggerTestSuite) TestNewLogWarnLevel() {
 	var buf bytes.Buffer
 
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -122,7 +134,10 @@ func (s *loggerTestSuite) TestNewLogErrorLevel() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -155,9 +170,13 @@ func (s *loggerTestSuite) TestNewLogAttrsDebugLevel() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_1": "attr value 1"}
 
-	NewGlobalSetting().WithLevel(DebugLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(DebugLevel, "test", givenAttrs)
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(DEBUG_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -189,8 +208,11 @@ func (s *loggerTestSuite) TestNewLogAttrsInfoLevel() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_1": "attr value 1"}
 
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(InfoLevel, "test", givenAttrs)
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(INFO_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -222,8 +244,11 @@ func (s *loggerTestSuite) TestNewLogAttrsWarnLevel() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_1": "attr value 1"}
 
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(WarnLevel, "test", givenAttrs)
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(WARN_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -256,8 +281,11 @@ func (s *loggerTestSuite) TestNewLogAttrsErrorLevel() {
 	givenErr := errors.New("attr error value 1")
 	givenAttrs := Attrs{"attr_err_1": givenErr}
 
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(ErrorLevel, "test", givenAttrs)
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(ERROR_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -288,8 +316,12 @@ func (s *loggerTestSuite) TestNewLogAttrsErrorLevel() {
 func (s *loggerTestSuite) TestLogDebugLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Debug("test")
 
 	var result map[string]interface{}
@@ -301,8 +333,12 @@ func (s *loggerTestSuite) TestLogDebugLevelWithSilent() {
 func (s *loggerTestSuite) TestLogInfoLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -314,8 +350,12 @@ func (s *loggerTestSuite) TestLogInfoLevelWithSilent() {
 func (s *loggerTestSuite) TestLogWarnLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -328,8 +368,12 @@ func (s *loggerTestSuite) TestLogErrorLevelWithSilent() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -342,9 +386,13 @@ func (s *loggerTestSuite) TestLogAttrsDebugLevelWithSilent() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_key_1": "attr value 1"}
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(DebugLevel, "test", givenAttrs)
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(DEBUG_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -356,9 +404,13 @@ func (s *loggerTestSuite) TestLogAttrsInfoLevelWithSilent() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_key_1": "attr value 1"}
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(InfoLevel, "test", givenAttrs)
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(INFO_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -370,9 +422,13 @@ func (s *loggerTestSuite) TestLogAttrsWarnLevelWithSilent() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_key_1": "attr value 1"}
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(WarnLevel, "test", givenAttrs)
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(WARN_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -385,9 +441,13 @@ func (s *loggerTestSuite) TestLogAttrsErrorLevelWithSilent() {
 	givenErr := errors.New("something went wrong")
 	givenAttrs := Attrs{"attr_err_key_1": givenErr}
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
-	lg.LogAttrs(ErrorLevel, "test", givenAttrs)
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
+	lg.LogAttrs(ERROR_LEVEL, "test", givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -398,8 +458,12 @@ func (s *loggerTestSuite) TestLogAttrsErrorLevelWithSilent() {
 func (s *loggerTestSuite) TestLogDebugLevelWithDebug() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Debug("test")
 
 	var result map[string]interface{}
@@ -411,8 +475,12 @@ func (s *loggerTestSuite) TestLogDebugLevelWithDebug() {
 func (s *loggerTestSuite) TestLogDebugLevelWithInfo() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Debug("test")
 
 	var result map[string]interface{}
@@ -424,8 +492,12 @@ func (s *loggerTestSuite) TestLogDebugLevelWithInfo() {
 func (s *loggerTestSuite) TestLogDebugLevelWithWarn() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Debug("test")
 
 	var result map[string]interface{}
@@ -437,8 +509,12 @@ func (s *loggerTestSuite) TestLogDebugLevelWithWarn() {
 func (s *loggerTestSuite) TestLogDebugLevelWithError() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Debug("test")
 
 	var result map[string]interface{}
@@ -450,8 +526,12 @@ func (s *loggerTestSuite) TestLogDebugLevelWithError() {
 func (s *loggerTestSuite) TestLogInfoLevelWithDebug() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -463,8 +543,12 @@ func (s *loggerTestSuite) TestLogInfoLevelWithDebug() {
 func (s *loggerTestSuite) TestLogInfoLevelWithInfo() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -476,8 +560,12 @@ func (s *loggerTestSuite) TestLogInfoLevelWithInfo() {
 func (s *loggerTestSuite) TestLogInfoLevelWithWarn() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -489,8 +577,12 @@ func (s *loggerTestSuite) TestLogInfoLevelWithWarn() {
 func (s *loggerTestSuite) TestLogInfoLevelWithError() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -502,8 +594,12 @@ func (s *loggerTestSuite) TestLogInfoLevelWithError() {
 func (s *loggerTestSuite) TestLogWarnLevelWithDebug() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -515,8 +611,12 @@ func (s *loggerTestSuite) TestLogWarnLevelWithDebug() {
 func (s *loggerTestSuite) TestLogWarnLevelWithInfo() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -528,8 +628,12 @@ func (s *loggerTestSuite) TestLogWarnLevelWithInfo() {
 func (s *loggerTestSuite) TestLogWarnLevelWithWarn() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -541,8 +645,12 @@ func (s *loggerTestSuite) TestLogWarnLevelWithWarn() {
 func (s *loggerTestSuite) TestLogWarnLevelWithError() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -555,8 +663,12 @@ func (s *loggerTestSuite) TestLogErrorLevelWithDebug() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -569,8 +681,12 @@ func (s *loggerTestSuite) TestLogErrorLevelWithInfo() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -583,8 +699,12 @@ func (s *loggerTestSuite) TestLogErrorLevelWithWarn() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -597,8 +717,12 @@ func (s *loggerTestSuite) TestLogErrorLevelWithError() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
-	lg := NewLogger(&buf, NewOptionManager(NewJSONFieldFormatter()).WithPlatformName("Finvest"))
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
+	lg := NewLogger(&buf, &OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &JSONFieldFormatter{},
+	})
 	lg.Error("test", givenErr)
 
 	var result map[string]interface{}

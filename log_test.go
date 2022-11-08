@@ -21,7 +21,8 @@ func TestLogTestSuite(t *testing.T) {
 func (s *logTestSuite) TestLogDebugLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).WithPlatformName("Test").Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -51,7 +52,8 @@ func (s *logTestSuite) TestLogDebugLevel() {
 func (s *logTestSuite) TestLogInfoLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).WithPlatformName("Test").Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -81,7 +83,8 @@ func (s *logTestSuite) TestLogInfoLevel() {
 func (s *logTestSuite) TestLogWarnLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).WithPlatformName("Test").Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -112,7 +115,8 @@ func (s *logTestSuite) TestLogErrorLevel() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).WithPlatformName("Test").Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -142,8 +146,9 @@ func (s *logTestSuite) TestLogErrorLevel() {
 func (s *logTestSuite) TestLogAttrDebugLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).WithPlatformName("Test").Configure()
-	LogAttrs(DebugLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
+	LogAttrs(DEBUG_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -173,8 +178,9 @@ func (s *logTestSuite) TestLogAttrDebugLevel() {
 func (s *logTestSuite) TestLogAttrInfoLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).WithPlatformName("Test").Configure()
-	LogAttrs(InfoLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
+	LogAttrs(INFO_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -204,8 +210,9 @@ func (s *logTestSuite) TestLogAttrInfoLevel() {
 func (s *logTestSuite) TestLogAttrWarnLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).WithPlatformName("Test").Configure()
-	LogAttrs(WarnLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
+	LogAttrs(WARN_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -235,8 +242,9 @@ func (s *logTestSuite) TestLogAttrWarnLevel() {
 func (s *logTestSuite) TestLogAttrErrorLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).WithPlatformName("Test").Configure()
-	LogAttrs(ErrorLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL, PlatformName: "Test"}
+	globalSetting.Configure()
+	LogAttrs(ERROR_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -266,7 +274,8 @@ func (s *logTestSuite) TestLogAttrErrorLevel() {
 func (s *logTestSuite) TestLogDebugLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -278,7 +287,8 @@ func (s *logTestSuite) TestLogDebugLevelWithSilent() {
 func (s *logTestSuite) TestLogInfoLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -290,7 +300,8 @@ func (s *logTestSuite) TestLogInfoLevelWithSilent() {
 func (s *logTestSuite) TestLogWarnLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -303,7 +314,8 @@ func (s *logTestSuite) TestLogErrorLevelWithSilent() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -315,8 +327,9 @@ func (s *logTestSuite) TestLogErrorLevelWithSilent() {
 func (s *logTestSuite) TestLogAttrsDebugLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	LogAttrs(DebugLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	LogAttrs(DEBUG_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -327,8 +340,9 @@ func (s *logTestSuite) TestLogAttrsDebugLevelWithSilent() {
 func (s *logTestSuite) TestLogAttrsInfoLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	LogAttrs(InfoLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	LogAttrs(INFO_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -339,8 +353,9 @@ func (s *logTestSuite) TestLogAttrsInfoLevelWithSilent() {
 func (s *logTestSuite) TestLogAttrsWarnLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	LogAttrs(WarnLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	LogAttrs(WARN_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -351,8 +366,9 @@ func (s *logTestSuite) TestLogAttrsWarnLevelWithSilent() {
 func (s *logTestSuite) TestLogAttrsErrorLevelWithSilent() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(SilentLevel).Configure()
-	LogAttrs(ErrorLevel, "test", Attrs{"attr_key_1": "attr value 1"})
+	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	LogAttrs(ERROR_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -363,7 +379,8 @@ func (s *logTestSuite) TestLogAttrsErrorLevelWithSilent() {
 func (s *logTestSuite) TestLogDebugLevelWithDebug() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -375,7 +392,8 @@ func (s *logTestSuite) TestLogDebugLevelWithDebug() {
 func (s *logTestSuite) TestLogDebugLevelWithInfo() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -387,7 +405,8 @@ func (s *logTestSuite) TestLogDebugLevelWithInfo() {
 func (s *logTestSuite) TestLogDebugLevelWithWarn() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -399,7 +418,8 @@ func (s *logTestSuite) TestLogDebugLevelWithWarn() {
 func (s *logTestSuite) TestLogDebugLevelWithError() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -411,7 +431,8 @@ func (s *logTestSuite) TestLogDebugLevelWithError() {
 func (s *logTestSuite) TestLogInfoLevelWithDebug() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -423,7 +444,8 @@ func (s *logTestSuite) TestLogInfoLevelWithDebug() {
 func (s *logTestSuite) TestLogInfoLevelWithInfo() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -435,7 +457,8 @@ func (s *logTestSuite) TestLogInfoLevelWithInfo() {
 func (s *logTestSuite) TestLogInfoLevelWithWarn() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -447,7 +470,8 @@ func (s *logTestSuite) TestLogInfoLevelWithWarn() {
 func (s *logTestSuite) TestLogInfoLevelWithError() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -459,7 +483,8 @@ func (s *logTestSuite) TestLogInfoLevelWithError() {
 func (s *logTestSuite) TestLogWarnLevelWithDebug() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -471,7 +496,8 @@ func (s *logTestSuite) TestLogWarnLevelWithDebug() {
 func (s *logTestSuite) TestLogWarnLevelWithInfo() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -483,7 +509,8 @@ func (s *logTestSuite) TestLogWarnLevelWithInfo() {
 func (s *logTestSuite) TestLogWarnLevelWithWarn() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -495,7 +522,8 @@ func (s *logTestSuite) TestLogWarnLevelWithWarn() {
 func (s *logTestSuite) TestLogWarnLevelWithError() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -508,7 +536,8 @@ func (s *logTestSuite) TestLogErrorLevelWithDebug() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(DebugLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
+	globalSetting.Configure()
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -521,7 +550,8 @@ func (s *logTestSuite) TestLogErrorLevelWithInfo() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(InfoLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
+	globalSetting.Configure()
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -534,7 +564,8 @@ func (s *logTestSuite) TestLogErrorLevelWithWarn() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(WarnLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
+	globalSetting.Configure()
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -547,7 +578,8 @@ func (s *logTestSuite) TestLogErrorLevelWithError() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	NewGlobalSetting().WithWriter(&buf).WithLevel(ErrorLevel).Configure()
+	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
+	globalSetting.Configure()
 	Error("test", givenErr)
 
 	var result map[string]interface{}

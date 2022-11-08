@@ -9,11 +9,11 @@ import (
 type Level int
 
 const (
-	DebugLevel  Level = -4
-	InfoLevel   Level = 0
-	WarnLevel   Level = 4
-	ErrorLevel  Level = 8
-	SilentLevel Level = 12
+	DEBUG_LEVEL  Level = -4
+	INFO_LEVEL   Level = 0
+	WARN_LEVEL   Level = 4
+	ERROR_LEVEL  Level = 8
+	SILENT_LEVEL Level = 12
 )
 
 func (l Level) String() string {
@@ -25,16 +25,16 @@ func (l Level) String() string {
 	}
 
 	switch {
-	case l < InfoLevel:
-		return str("DEBUG", l-DebugLevel)
-	case l < WarnLevel:
+	case l < INFO_LEVEL:
+		return str("DEBUG", l-DEBUG_LEVEL)
+	case l < WARN_LEVEL:
 		return str("INFO", l)
-	case l < ErrorLevel:
-		return str("WARN", l-WarnLevel)
-	case l == SilentLevel:
-		return str("SILENT", l-SilentLevel)
+	case l < ERROR_LEVEL:
+		return str("WARN", l-WARN_LEVEL)
+	case l == SILENT_LEVEL:
+		return str("SILENT", l-SILENT_LEVEL)
 	default:
-		return str("ERROR", l-ErrorLevel)
+		return str("ERROR", l-ERROR_LEVEL)
 	}
 }
 

@@ -3,6 +3,7 @@ package stdlog
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,35 +19,37 @@ func TestGlobalLogSettingTestSuite(t *testing.T) {
 }
 
 func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithDebugLevel() {
-	assert.Equal(s.T(), DebugLevel, NewGlobalSetting().WithLevel(DebugLevel).level)
+	assert.Equal(s.T(), DEBUG_LEVEL, GlobalSetting{Level: DEBUG_LEVEL}.Level)
 }
 
 func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithInfoLevel() {
-	assert.Equal(s.T(), InfoLevel, NewGlobalSetting().WithLevel(InfoLevel).level)
+	assert.Equal(s.T(), INFO_LEVEL, GlobalSetting{Level: INFO_LEVEL}.Level)
 }
 
 func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithWarnLevel() {
-	assert.Equal(s.T(), WarnLevel, NewGlobalSetting().WithLevel(WarnLevel).level)
+	assert.Equal(s.T(), WARN_LEVEL, GlobalSetting{Level: WARN_LEVEL}.Level)
 }
 
 func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithErrorLevel() {
-	assert.Equal(s.T(), ErrorLevel, NewGlobalSetting().WithLevel(ErrorLevel).level)
+	assert.Equal(s.T(), ERROR_LEVEL, GlobalSetting{Level: ERROR_LEVEL}.Level)
 }
 
 func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithSilentLevel() {
-	assert.Equal(s.T(), SilentLevel, NewGlobalSetting().WithLevel(SilentLevel).level)
+	assert.Equal(s.T(), SILENT_LEVEL, GlobalSetting{Level: SILENT_LEVEL}.Level)
 }
 
 func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithPlatformName() {
-	assert.Equal(s.T(), "Test", NewGlobalSetting().WithPlatformName("Test").platformName)
+	assert.Equal(s.T(), "Test", GlobalSetting{PlatformName: "Test"}.PlatformName)
 }
 
 func (s *globalLogSettingTestSuite) TestConfigureWithPlatformNameWithDefaultLevel() {
 	var buf bytes.Buffer
 
-	NewGlobalSetting().WithWriter(&buf).WithPlatformName("Test").Configure()
-	log.Info("test")
+	globalSetting := &GlobalSetting{Writer: &buf, PlatformName: "Test"}
+	globalSetting.Configure()
 
+	log.Info("test")
+	fmt.Println(buf.String())
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
 		s.T().Fatal(err)
@@ -70,30 +73,35 @@ func (s *globalLogSettingTestSuite) TestConfigureWithPlatformNameWithDefaultLeve
 		assert.Equal(s.T(), true, checkValueMap(result, want.key, want.val))
 	}
 
-	assert.Equal(s.T(), InfoLevel, logLevel)
+	assert.Equal(s.T(), INFO_LEVEL, logLevel)
 }
 
 func (s *globalLogSettingTestSuite) TestConfigureWithDebugLevel() {
-	NewGlobalSetting().WithLevel(DebugLevel).Configure()
-	assert.Equal(s.T(), DebugLevel, logLevel)
+	globalSetting := &GlobalSetting{Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), DEBUG_LEVEL, logLevel)
 }
 
 func (s *globalLogSettingTestSuite) TestConfigureWithInfoLevel() {
-	NewGlobalSetting().WithLevel(InfoLevel).Configure()
-	assert.Equal(s.T(), InfoLevel, logLevel)
+	globalSetting := &GlobalSetting{Level: INFO_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), INFO_LEVEL, logLevel)
 }
 
 func (s *globalLogSettingTestSuite) TestConfigureWithWarnLevel() {
-	NewGlobalSetting().WithLevel(WarnLevel).Configure()
-	assert.Equal(s.T(), WarnLevel, logLevel)
+	globalSetting := &GlobalSetting{Level: WARN_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), WARN_LEVEL, logLevel)
 }
 
 func (s *globalLogSettingTestSuite) TestConfigureWithErrorLevel() {
-	NewGlobalSetting().WithLevel(ErrorLevel).Configure()
-	assert.Equal(s.T(), ErrorLevel, logLevel)
+	globalSetting := &GlobalSetting{Level: ERROR_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), ERROR_LEVEL, logLevel)
 }
 
 func (s *globalLogSettingTestSuite) TestConfigureWithSilentLevel() {
-	NewGlobalSetting().WithLevel(SilentLevel).Configure()
-	assert.Equal(s.T(), SilentLevel, logLevel)
+	globalSetting := &GlobalSetting{Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), SILENT_LEVEL, logLevel)
 }
