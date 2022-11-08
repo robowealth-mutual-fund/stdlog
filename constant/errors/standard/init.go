@@ -3,12 +3,12 @@ package standard
 type value int
 
 const (
-	BAD_REQUEST value = iota
-	UNAUTHORIZED
-	FORBIDDEN
-	NOT_FOUND
-	UNSUPPORTED_MEDIA_TYPE
-	UNPROCESSABLE_ENTITY
-	INTERNAL_SERVER_ERROR
-	GATEWAY_TIMEOUT
+	BadRequest value = iota
+	Unauthorized
+	Forbidden
+	NotFound
+	UnsupportedMediaType
+	UnprocessableEntity
+	InternalServerError
+	GatewayTimeout
 )

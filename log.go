@@ -28,6 +28,6 @@ func Error(msg string, err error, args ...any) {
 	log.Error(msg, err, args...)
 }
 
-func LogAttrs(level Level, msg string, fields Fields) {
+func LogAttrs(level Level, msg string, fields Attrs) {
 	log.LogAttrs(slog.Level(level), msg, fields.convert()...)
 }

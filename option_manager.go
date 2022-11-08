@@ -16,16 +16,8 @@ func NewOptionManager(jsonfieldManager *JSONFieldFormatter) *OptionManager {
 	}
 }
 
-func NewOptionManagerWithDefaultConfig() *OptionManager {
-	jsonFieldManager := NewJSONFieldFormatter().WithPlatformNameKey("platform_name")
-
-	return &OptionManager{
-		jsonFieldManager: jsonFieldManager,
-	}
-}
-
-func (om *OptionManager) WithDisabledPlatformNameKey(disabled bool) *OptionManager {
-	om.disabledPlatformNameKey = disabled
+func (om *OptionManager) WithDisabledPlatformNameKey() *OptionManager {
+	om.disabledPlatformNameKey = true
 	return om
 }
 
@@ -56,8 +48,12 @@ func (ff *JSONFieldFormatter) WithPlatformNameKey(name string) *JSONFieldFormatt
 	return ff
 }
 
+func (ff *JSONFieldFormatter) PlatformNameKey() string {
+	return ff.platformNameKey
+}
+
 func (ff *JSONFieldFormatter) PlatformNameKeyWithDefault() string {
-	if ff.platformNameKey != "" {
+	if ff.PlatformNameKey() != "" {
 		return ff.platformNameKey
 	}
 	return platformName

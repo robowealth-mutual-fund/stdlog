@@ -3,5 +3,5 @@ package otp
 type value int
 
 const (
-	INCORRECT value = iota
+	Incorrect value = iota
 )

@@ -6,11 +6,12 @@ import (
 	"golang.org/x/exp/slog"
 )
 
+//go:generate mockery --dir=./ --name=Logger --filename=logger.go --output=internal/mocks --outpkg=mocks
 type Logger interface {
 	Info(msg string, args ...any)
 	Debug(msg string, args ...any)
 	Error(msg string, err error, args ...any)
-	LogAttrs(level Level, msg string, fields Fields)
+	LogAttrs(level Level, msg string, fields Attrs)
 	Warn(msg string, args ...any)
 }
 
@@ -35,22 +36,22 @@ func NewLogger(w io.Writer, optManager *OptionManager) Logger {
 	}
 }
 
+func (l Log) Debug(msg string, args ...any) {
+	l.slogLogger.Debug(msg, args...)
+}
+
 func (l Log) Info(msg string, args ...any) {
 	l.slogLogger.Info(msg, args...)
 }
 
-func (l Log) Debug(msg string, args ...any) {
-	l.slogLogger.Debug(msg, args...)
+func (l Log) Warn(msg string, args ...any) {
+	l.slogLogger.Warn(msg, args...)
 }
 
 func (l Log) Error(msg string, err error, args ...any) {
 	l.slogLogger.Error(msg, err, args...)
 }
 
-func (l Log) LogAttrs(level Level, msg string, fields Fields) {
+func (l Log) LogAttrs(level Level, msg string, fields Attrs) {
 	l.slogLogger.LogAttrs(slog.Level(level), msg, fields.convert()...)
-}
-
-func (l Log) Warn(msg string, args ...any) {
-	l.slogLogger.Warn(msg, args...)
 }

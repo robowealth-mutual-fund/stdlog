@@ -15,19 +15,6 @@ const (
 	SilentLevel Level = 12
 )
 
-var (
-	InfoLevel2 Level = 0
-)
-
-// String returns a name for the level.
-// If the level has a name, then that name
-// in uppercase is returned.
-// If the level is between named values, then
-// an integer is appended to the uppercased name.
-// Examples:
-//
-//	WarnLevel.String() => "WARN"
-//	(WarnLevel-2).String() => "WARN-2"
 func (l Level) String() string {
 	str := func(base string, val Level) string {
 		if val == 0 {
@@ -43,6 +30,8 @@ func (l Level) String() string {
 		return str("INFO", l)
 	case l < ErrorLevel:
 		return str("WARN", l-WarnLevel)
+	case l == SilentLevel:
+		return str("SILENT", l-SilentLevel)
 	default:
 		return str("ERROR", l-ErrorLevel)
 	}
