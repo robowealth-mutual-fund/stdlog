@@ -29,7 +29,9 @@ func NewLogger(w io.Writer, optManager *OptionManager) Logger {
 	}
 
 	return &Log{
-		slogLogger: slog.New(slog.HandlerOptions{Level: logLevel}.NewJSONHandler(w).WithAttrs(attrs)),
+		slogLogger: slog.New(slog.HandlerOptions{Level: logLevel}.
+			NewJSONHandler(w).
+			WithAttrs(attrs)),
 	}
 }
 
