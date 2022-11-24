@@ -1,23 +1,22 @@
 package main
 
 import (
+	"os"
+
 	log "github.com/robowealth-mutual-fund/stdlog"
 )
 
 func main() {
-	// New log instance
-	//fluentLog := log.New(os.Stderr,
-	//	log.WithPlatformName("Odini"),
-	//	log.WithTimestamp(true),
-	//)
-	//fluentLog.Warn().Str("some_key", "Hello World").Msg("This is standard log lib!")
-	//
-	//// Global log instance
-	//log.SetGlobalTimestamp()
-	//log.SetGlobalPlatformName("Finvest")
-	//log.SetGlobalTimestampFieldName("timestamp")
-	//log.SetGlobalLogLevel(log.WarnLevel)
-	//log.Warn().Msg("Hello test test")
+	optManage := &log.OptionManager{
+		PlatformName:       "Finvest",
+		JSONFieldFormatter: &log.JSONFieldFormatter{},
+	}
+	lg := log.NewLogger(os.Stdout, optManage)
 
-	log.Panic().Msg("sdsdsd")
+	//New logger
+	lg.Debug("debug level")
+	lg.LogAttrs(log.INFO_LEVEL, "new logger", log.Attrs{"test with field": "This is a value"})
+
+	// Global log instance
+	log.Error("some message", nil)
 }

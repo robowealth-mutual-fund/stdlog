@@ -1,94 +1,107 @@
 package stdlog
 
 import (
-	"github.com/stretchr/testify/suite"
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-type logTestSuite struct {
+type globalLogSettingTestSuite struct {
 	suite.Suite
 }
 
-func TestLogTestSuite(t *testing.T) {
-	suite.Run(t, new(logTestSuite))
+func TestGlobalLogSettingTestSuite(t *testing.T) {
+	suite.Run(t, new(globalLogSettingTestSuite))
 }
 
-func (s *logTestSuite) TestSetGlobalTimestamp() {
-	SetGlobalTimestamp()
+func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithDebugLevel() {
+	assert.Equal(s.T(), DEBUG_LEVEL, GlobalSetting{Level: DEBUG_LEVEL}.Level)
 }
 
-func (s *logTestSuite) TestSetGlobalLogDebugLevel() {
-	SetGlobalLogLevel(DebugLevel)
+func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithInfoLevel() {
+	assert.Equal(s.T(), INFO_LEVEL, GlobalSetting{Level: INFO_LEVEL}.Level)
 }
 
-func (s *logTestSuite) TestSetGlobalLogWarnLevel() {
-	SetGlobalLogLevel(WarnLevel)
+func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithWarnLevel() {
+	assert.Equal(s.T(), WARN_LEVEL, GlobalSetting{Level: WARN_LEVEL}.Level)
 }
 
-func (s *logTestSuite) TestSetGlobalLogErrorLevel() {
-	SetGlobalLogLevel(ErrorLevel)
+func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithErrorLevel() {
+	assert.Equal(s.T(), ERROR_LEVEL, GlobalSetting{Level: ERROR_LEVEL}.Level)
 }
 
-func (s *logTestSuite) TestSetGlobalLogTraceLevel() {
-	SetGlobalLogLevel(TraceLevel)
+func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithSilentLevel() {
+	assert.Equal(s.T(), SILENT_LEVEL, GlobalSetting{Level: SILENT_LEVEL}.Level)
 }
 
-func (s *logTestSuite) TestSetGlobalLogInfoLevel() {
-	SetGlobalLogLevel(InfoLevel)
+func (s *globalLogSettingTestSuite) TestNewGlobalLogSettingWithPlatformName() {
+	assert.Equal(s.T(), "Test", GlobalSetting{PlatformName: "Test"}.PlatformName)
 }
 
-func (s *logTestSuite) TestSetGlobalLogFatalLevel() {
-	SetGlobalLogLevel(FatalLevel)
+func (s *globalLogSettingTestSuite) TestConfigureWithPlatformNameWithDefaultLevel() {
+	var buf bytes.Buffer
+
+	globalSetting := &GlobalSetting{Writer: &buf, PlatformName: "Test"}
+	globalSetting.Configure()
+
+	log.Info("test")
+	fmt.Println(buf.String())
+	var result map[string]interface{}
+	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
+		s.T().Fatal(err)
+	}
+
+	wants := []struct {
+		key string
+		val string
+	}{
+		{key: "level", val: "INFO"},
+		{key: "platform_name", val: "Test"},
+	}
+
+	// Check key exist
+	for _, want := range wants {
+		assert.Equal(s.T(), true, checkKeyMap(result, want.key))
+	}
+
+	// Check expected value
+	for _, want := range wants {
+		assert.Equal(s.T(), true, checkValueMap(result, want.key, want.val))
+	}
+
+	assert.Equal(s.T(), INFO_LEVEL, logLevel)
 }
 
-func (s *logTestSuite) TestSetGlobalLogPanicLevel() {
-	SetGlobalLogLevel(PanicLevel)
+func (s *globalLogSettingTestSuite) TestConfigureWithDebugLevel() {
+	globalSetting := &GlobalSetting{Level: DEBUG_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), DEBUG_LEVEL, logLevel)
 }
 
-func (s *logTestSuite) TestSetGlobalLogDisabledLevel() {
-	SetGlobalLogLevel(Disabled)
+func (s *globalLogSettingTestSuite) TestConfigureWithInfoLevel() {
+	globalSetting := &GlobalSetting{Level: INFO_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), INFO_LEVEL, logLevel)
 }
 
-func (s *logTestSuite) TestSetGlobalLogNoLevel() {
-	SetGlobalLogLevel(NoLevel)
+func (s *globalLogSettingTestSuite) TestConfigureWithWarnLevel() {
+	globalSetting := &GlobalSetting{Level: WARN_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), WARN_LEVEL, logLevel)
 }
 
-func (s *logTestSuite) TestSetGlobalLogDefaultLevel() {
-	SetGlobalLogLevel(99)
+func (s *globalLogSettingTestSuite) TestConfigureWithErrorLevel() {
+	globalSetting := &GlobalSetting{Level: ERROR_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), ERROR_LEVEL, logLevel)
 }
 
-func (s *logTestSuite) TestSetGlobalLogPlatformName() {
-	SetGlobalPlatformName("test platform")
-}
-
-func (s *logTestSuite) TestSetGlobalTimestampFieldName() {
-	SetGlobalTimestampFieldName("test field name")
-}
-
-func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnixMs() {
-	SetGlobalTimeFieldFormat(TimeFormatUnixMs)
-}
-
-func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnix() {
-	SetGlobalTimeFieldFormat(TimeFormatUnix)
-}
-
-func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnixMicro() {
-	SetGlobalTimeFieldFormat(TimeFormatUnixMicro)
-}
-
-func (s *logTestSuite) TestSetGlobalTimeFieldFormatUnixNano() {
-	SetGlobalTimeFieldFormat(TimeFormatUnixNano)
-}
-
-func (s *logTestSuite) TestSetGlobalTimeFieldFormatDefault() {
-	SetGlobalTimeFieldFormat(99)
-}
-
-func (s *logTestSuite) TestSetGlobalLevelFieldName() {
-	SetGlobalLevelFieldName("test")
-}
-
-func (s *logTestSuite) TestSetGlobalMessageFieldName() {
-	SetGlobalMessageFieldName("test")
+func (s *globalLogSettingTestSuite) TestConfigureWithSilentLevel() {
+	globalSetting := &GlobalSetting{Level: SILENT_LEVEL}
+	globalSetting.Configure()
+	assert.Equal(s.T(), SILENT_LEVEL, logLevel)
 }

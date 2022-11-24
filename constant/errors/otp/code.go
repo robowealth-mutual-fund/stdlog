@@ -5,6 +5,6 @@ func (e value) Code() string {
 	case INCORRECT:
 		return "ROA_422_004_XXX"
 	default:
-		return ""
+		return "UNKNOWN"
 	}
 }

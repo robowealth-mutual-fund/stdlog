@@ -5,6 +5,6 @@ func (e value) Subject() string {
 	case INCORRECT:
 		return "OTP_INCORRECT"
 	default:
-		return ""
+		return "UNKNOWN"
 	}
 }

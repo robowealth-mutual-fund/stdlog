@@ -1,27 +1,43 @@
 package stdlog
 
-// Level defines log levels.
-type Level int8
+import (
+	"fmt"
+
+	"golang.org/x/exp/slog"
+)
+
+type Level int
 
 const (
-	// DebugLevel defines debug log level.
-	DebugLevel Level = iota
-	// InfoLevel defines info log level.
-	InfoLevel
-	// WarnLevel defines warn log level.
-	WarnLevel
-	// ErrorLevel defines error log level.
-	ErrorLevel
-	// FatalLevel defines fatal log level.
-	FatalLevel
-	// PanicLevel defines panic log level.
-	PanicLevel
-	// NoLevel defines an absent log level.
-	NoLevel
-	// Disabled disables the logger.
-	Disabled
-
-	// TraceLevel defines trace log level.
-	TraceLevel Level = -1
-	// Values less than TraceLevel are handled as numbers.
+	DEBUG_LEVEL  Level = -4
+	INFO_LEVEL   Level = 0
+	WARN_LEVEL   Level = 4
+	ERROR_LEVEL  Level = 8
+	SILENT_LEVEL Level = 12
 )
+
+func (l Level) String() string {
+	str := func(base string, val Level) string {
+		if val == 0 {
+			return base
+		}
+		return fmt.Sprintf("%s%+d", base, val)
+	}
+
+	switch {
+	case l < INFO_LEVEL:
+		return str("DEBUG", l-DEBUG_LEVEL)
+	case l < WARN_LEVEL:
+		return str("INFO", l)
+	case l < ERROR_LEVEL:
+		return str("WARN", l-WARN_LEVEL)
+	case l == SILENT_LEVEL:
+		return str("SILENT", l-SILENT_LEVEL)
+	default:
+		return str("ERROR", l-ERROR_LEVEL)
+	}
+}
+
+func (l Level) Level() slog.Level {
+	return slog.Level(l)
+}

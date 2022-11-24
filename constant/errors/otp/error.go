@@ -1,10 +1,12 @@
 package otp
 
+import "fmt"
+
 func (e value) Error() string {
 	switch e {
 	case INCORRECT:
-		return "ROA_422_004_XXX"
+		return fmt.Sprintf("ROA_422_004_XXX %s", e.Subject())
 	default:
-		return ""
+		return "UNKNOWN"
 	}
 }

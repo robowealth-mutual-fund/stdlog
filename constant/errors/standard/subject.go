@@ -19,6 +19,6 @@ func (e value) Subject() string {
 	case GATEWAY_TIMEOUT:
 		return "GATEWAY_TIMEOUT"
 	default:
-		return ""
+		return "UNKNOWN"
 	}
 }

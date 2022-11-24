@@ -1,74 +1,31 @@
 package stdlog
 
 import (
-	"github.com/rs/zerolog"
-	"time"
+	"io"
+	"os"
+
+	"golang.org/x/exp/slog"
 )
 
-func SetGlobalTimestamp() {
-	logger.With().Timestamp()
+type GlobalSetting struct {
+	Writer       io.Writer
+	Level        Level
+	PlatformName string
 }
 
-func SetGlobalLogLevel(level Level) {
-	var logLv zerolog.Level
+func (gs *GlobalSetting) Configure() {
+	var attrs []slog.Attr
 
-	switch level {
-	case TraceLevel:
-		logLv = zerolog.TraceLevel
-	case DebugLevel:
-		logLv = zerolog.DebugLevel
-	case InfoLevel:
-		logLv = zerolog.InfoLevel
-	case WarnLevel:
-		logLv = zerolog.WarnLevel
-	case ErrorLevel:
-		logLv = zerolog.ErrorLevel
-	case FatalLevel:
-		logLv = zerolog.FatalLevel
-	case PanicLevel:
-		logLv = zerolog.PanicLevel
-	case Disabled:
-		logLv = zerolog.Disabled
-	case NoLevel:
-		logLv = zerolog.NoLevel
-	default:
-		logLv = zerolog.NoLevel
+	if gs.PlatformName != "" {
+		attrs = append(attrs, slog.Any(PLATFORM_NAME_KEY, gs.PlatformName))
 	}
 
-	zerolog.SetGlobalLevel(logLv)
-}
+	logLevel = gs.Level
 
-func SetGlobalPlatformName(name string) {
-	logger.With().Str("platform_name", name)
-}
-
-func SetGlobalTimestampFieldName(key string) {
-	zerolog.TimestampFieldName = key
-}
-
-func SetGlobalTimeFieldFormat(format TimeFormat) {
-	var timeFormat string
-
-	switch format {
-	case TimeFormatUnix:
-		timeFormat = zerolog.TimeFormatUnix
-	case TimeFormatUnixMs:
-		timeFormat = zerolog.TimeFormatUnixMs
-	case TimeFormatUnixMicro:
-		timeFormat = zerolog.TimeFormatUnixMicro
-	case TimeFormatUnixNano:
-		timeFormat = zerolog.TimeFormatUnixNano
-	default:
-		timeFormat = time.RFC3339
+	if gs.Writer == nil {
+		gs.Writer = os.Stdout
 	}
 
-	zerolog.TimeFieldFormat = timeFormat
-}
-
-func SetGlobalLevelFieldName(key string) {
-	zerolog.LevelFieldName = key
-}
-
-func SetGlobalMessageFieldName(key string) {
-	zerolog.MessageFieldName = key
+	h := slog.HandlerOptions{Level: gs.Level}.NewJSONHandler(gs.Writer).WithAttrs(attrs)
+	log = slog.New(h)
 }
