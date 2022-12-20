@@ -1,10 +1,6 @@
 package stdlog
 
-import (
-	"fmt"
-	"github.com/robowealth-mutual-fund/stdlog/internal/constants"
-	"io"
-)
+import "github.com/robowealth-mutual-fund/stdlog/internal/constants"
 
 func SetGlobalPlatformName(name string) {
 	log = log.With(constants.PLATFORM_NAME_KEY, name)
@@ -13,9 +9,4 @@ func SetGlobalPlatformName(name string) {
 func SetGlobalLogLevel(level Level) {
 	logLevel = level
 	levelVar.Set(logLevel.Level())
-}
-
-func SetGlobalLogWriter(w io.Writer) {
-	*logWriter = w
-	fmt.Printf("inside set: %T\n", *logWriter)
 }
