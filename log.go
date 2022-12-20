@@ -1,7 +1,6 @@
 package stdlog
 
 import (
-	"io"
 	"os"
 
 	"golang.org/x/exp/slog"
@@ -10,10 +9,9 @@ import (
 )
 
 var (
-	logLevel  = INFO_LEVEL
-	log       = loadDefaultLogger()
-	levelVar  = &slog.LevelVar{}
-	logWriter = new(io.Writer)
+	logLevel = INFO_LEVEL
+	log      = loadDefaultLogger()
+	levelVar = &slog.LevelVar{}
 )
 
 func Debug2(msg string) {
