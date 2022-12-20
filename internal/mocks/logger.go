@@ -20,12 +20,22 @@ func (_m *Logger) Debug(msg string, args ...interface{}) {
 	_m.Called(_ca...)
 }
 
+// DebugWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) DebugWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
+}
+
 // Error provides a mock function with given fields: msg, err, args
 func (_m *Logger) Error(msg string, err error, args ...interface{}) {
 	var _ca []interface{}
 	_ca = append(_ca, msg, err)
 	_ca = append(_ca, args...)
 	_m.Called(_ca...)
+}
+
+// ErrorWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) ErrorWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
 }
 
 // Info provides a mock function with given fields: msg, args
@@ -36,9 +46,9 @@ func (_m *Logger) Info(msg string, args ...interface{}) {
 	_m.Called(_ca...)
 }
 
-// LogAttrs provides a mock function with given fields: level, msg, fields
-func (_m *Logger) LogAttrs(level stdlog.Level, msg string, fields stdlog.Attrs) {
-	_m.Called(level, msg, fields)
+// InfoWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) InfoWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
 }
 
 // Warn provides a mock function with given fields: msg, args
@@ -47,6 +57,11 @@ func (_m *Logger) Warn(msg string, args ...interface{}) {
 	_ca = append(_ca, msg)
 	_ca = append(_ca, args...)
 	_m.Called(_ca...)
+}
+
+// WarnWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) WarnWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
 }
 
 type mockConstructorTestingTNewLogger interface {

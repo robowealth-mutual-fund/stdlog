@@ -1,31 +1,21 @@
 package stdlog
 
 import (
+	"fmt"
+	"github.com/robowealth-mutual-fund/stdlog/internal/constants"
 	"io"
-	"os"
-
-	"golang.org/x/exp/slog"
 )
 
-type GlobalSetting struct {
-	Writer       io.Writer
-	Level        Level
-	PlatformName string
+func SetGlobalPlatformName(name string) {
+	log = log.With(constants.PLATFORM_NAME_KEY, name)
 }
 
-func (gs *GlobalSetting) Configure() {
-	var attrs []slog.Attr
+func SetGlobalLogLevel(level Level) {
+	logLevel = level
+	levelVar.Set(logLevel.Level())
+}
 
-	if gs.PlatformName != "" {
-		attrs = append(attrs, slog.Any(PLATFORM_NAME_KEY, gs.PlatformName))
-	}
-
-	logLevel = gs.Level
-
-	if gs.Writer == nil {
-		gs.Writer = os.Stdout
-	}
-
-	h := slog.HandlerOptions{Level: gs.Level}.NewJSONHandler(gs.Writer).WithAttrs(attrs)
-	log = slog.New(h)
+func SetGlobalLogWriter(w io.Writer) {
+	*logWriter = w
+	fmt.Printf("inside set: %T\n", *logWriter)
 }

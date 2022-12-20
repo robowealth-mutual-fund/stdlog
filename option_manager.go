@@ -1,8 +1,6 @@
 package stdlog
 
-const (
-	PLATFORM_NAME_KEY = "platform_name"
-)
+import "github.com/robowealth-mutual-fund/stdlog/internal/constants"
 
 type OptionManager struct {
 	DisabledPlatformNameKey bool
@@ -23,5 +21,5 @@ func (jff *JSONFieldFormatter) PlatformNameKeyWithDefault() string {
 	if jff.PlatformNameKey != "" {
 		return jff.PlatformNameKey
 	}
-	return PLATFORM_NAME_KEY
+	return constants.PLATFORM_NAME_KEY
 }

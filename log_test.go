@@ -4,25 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
+	"golang.org/x/exp/slog"
 )
 
-type logTestSuite struct {
-	suite.Suite
-}
-
-func TestLogTestSuite(t *testing.T) {
-	suite.Run(t, new(logTestSuite))
-}
-
-func (s *logTestSuite) TestLogDebugLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogDebugLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
+	SetGlobalLogLevel(DEBUG_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
 	Debug("test")
 
 	var result map[string]interface{}
@@ -49,11 +41,12 @@ func (s *logTestSuite) TestLogDebugLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogInfoLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogInfoLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
+	SetGlobalLogLevel(INFO_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
 	Info("test")
 
 	var result map[string]interface{}
@@ -80,11 +73,12 @@ func (s *logTestSuite) TestLogInfoLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogWarnLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogWarnLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
+	SetGlobalLogLevel(WARN_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
 	Warn("test")
 
 	var result map[string]interface{}
@@ -111,12 +105,13 @@ func (s *logTestSuite) TestLogWarnLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogErrorLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogErrorLevel() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
+	SetGlobalLogLevel(ERROR_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -143,12 +138,13 @@ func (s *logTestSuite) TestLogErrorLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogAttrDebugLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrDebugLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
-	LogAttrs(DEBUG_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(DEBUG_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
+	DebugWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -175,12 +171,13 @@ func (s *logTestSuite) TestLogAttrDebugLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogAttrInfoLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrInfoLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
-	LogAttrs(INFO_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(INFO_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
+	InfoWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -207,12 +204,13 @@ func (s *logTestSuite) TestLogAttrInfoLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogAttrWarnLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrWarnLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
-	LogAttrs(WARN_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(WARN_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
+	WarnWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -239,12 +237,13 @@ func (s *logTestSuite) TestLogAttrWarnLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogAttrErrorLevel() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrErrorLevel() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL, PlatformName: "Test"}
-	globalSetting.Configure()
-	LogAttrs(ERROR_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(ERROR_LEVEL)
+	loadDefaultLoggerTest(&buf)
+	SetGlobalPlatformName("Test")
+	ErrorWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -271,11 +270,9 @@ func (s *logTestSuite) TestLogAttrErrorLevel() {
 	}
 }
 
-func (s *logTestSuite) TestLogDebugLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogDebugLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
 	Debug("test")
 
 	var result map[string]interface{}
@@ -284,11 +281,9 @@ func (s *logTestSuite) TestLogDebugLevelWithSilent() {
 	}
 }
 
-func (s *logTestSuite) TestLogInfoLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogInfoLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
 	Info("test")
 
 	var result map[string]interface{}
@@ -297,11 +292,9 @@ func (s *logTestSuite) TestLogInfoLevelWithSilent() {
 	}
 }
 
-func (s *logTestSuite) TestLogWarnLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogWarnLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
 	Warn("test")
 
 	var result map[string]interface{}
@@ -310,280 +303,326 @@ func (s *logTestSuite) TestLogWarnLevelWithSilent() {
 	}
 }
 
-func (s *logTestSuite) TestLogErrorLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogErrorLevelWithSilent() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(SILENT_LEVEL)
 	Error("test", givenErr)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		assert.Error(s.T(), err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogAttrsDebugLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrsDebugLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
-	LogAttrs(DEBUG_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(SILENT_LEVEL)
+	DebugWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogAttrsInfoLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrsInfoLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
-	LogAttrs(INFO_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(SILENT_LEVEL)
+	InfoWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogAttrsWarnLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrsWarnLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
-	LogAttrs(WARN_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(SILENT_LEVEL)
+	WarnWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogAttrsErrorLevelWithSilent() {
+func (s *packageTestSuite) TestGlobalInstanceLogAttrsErrorLevelWithSilent() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: SILENT_LEVEL}
-	globalSetting.Configure()
-	LogAttrs(ERROR_LEVEL, "test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalLogLevel(SILENT_LEVEL)
+	ErrorWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogDebugLevelWithDebug() {
+func (s *packageTestSuite) TestGlobalInstanceLogDebugLevelWithDebug() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(DEBUG_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Debug("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogDebugLevelWithInfo() {
+func (s *packageTestSuite) TestGlobalInstanceLogDebugLevelWithInfo() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(INFO_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Debug("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogDebugLevelWithWarn() {
+func (s *packageTestSuite) TestGlobalInstanceLogDebugLevelWithWarn() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(WARN_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Debug("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogDebugLevelWithError() {
+func (s *packageTestSuite) TestGlobalInstanceLogDebugLevelWithError() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(ERROR_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Debug("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogInfoLevelWithDebug() {
+func (s *packageTestSuite) TestGlobalInstanceLogInfoLevelWithDebug() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(DEBUG_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Info("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogInfoLevelWithInfo() {
+func (s *packageTestSuite) TestGlobalInstanceLogInfoLevelWithInfo() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(INFO_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Info("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogInfoLevelWithWarn() {
+func (s *packageTestSuite) TestGlobalInstanceLogInfoLevelWithWarn() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(WARN_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Info("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogInfoLevelWithError() {
+func (s *packageTestSuite) TestGlobalInstanceLogInfoLevelWithError() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(ERROR_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Info("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogWarnLevelWithDebug() {
+func (s *packageTestSuite) TestGlobalInstanceLogWarnLevelWithDebug() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(DEBUG_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Warn("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogWarnLevelWithInfo() {
+func (s *packageTestSuite) TestGlobalInstanceLogWarnLevelWithInfo() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(INFO_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Warn("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogWarnLevelWithWarn() {
+func (s *packageTestSuite) TestGlobalInstanceLogWarnLevelWithWarn() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(WARN_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Warn("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogWarnLevelWithError() {
+func (s *packageTestSuite) TestGlobalInstanceLogWarnLevelWithError() {
 	var buf bytes.Buffer
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(ERROR_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Warn("test")
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.Error(s.T(), err, "no output log")
+		s.Error(err, "error unmarshal")
 	}
+
+	s.Equal(0, len(result))
 }
 
-func (s *logTestSuite) TestLogErrorLevelWithDebug() {
+func (s *packageTestSuite) TestGlobalInstanceLogErrorLevelWithDebug() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: DEBUG_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(DEBUG_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Error("test", givenErr)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogErrorLevelWithInfo() {
+func (s *packageTestSuite) TestGlobalInstanceLogErrorLevelWithInfo() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: INFO_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(INFO_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Error("test", givenErr)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogErrorLevelWithWarn() {
+func (s *packageTestSuite) TestGlobalInstanceLogErrorLevelWithWarn() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: WARN_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(WARN_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Error("test", givenErr)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
 }
 
-func (s *logTestSuite) TestLogErrorLevelWithError() {
+func (s *packageTestSuite) TestGlobalInstanceLogErrorLevelWithError() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	globalSetting := &GlobalSetting{Writer: &buf, Level: ERROR_LEVEL}
-	globalSetting.Configure()
+	SetGlobalLogLevel(ERROR_LEVEL)
+	loadDefaultLoggerTest(&buf)
 	Error("test", givenErr)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
-		assert.NoError(s.T(), err)
+		s.Error(err, "error unmarshal")
 	}
+
+	s.NotEqual(0, len(result))
+}
+
+func loadDefaultLoggerTest(buf *bytes.Buffer) {
+	d := &slog.HandlerOptions{
+		Level:       logLevel,
+		ReplaceAttr: loadDefaultReplaceAttr(),
+	}
+
+	log = slog.New(d.NewJSONHandler(buf))
 }
