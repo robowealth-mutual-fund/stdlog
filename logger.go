@@ -8,10 +8,10 @@ import (
 
 //go:generate mockery --dir=./ --name=Logger --filename=logger.go --output=internal/mocks --outpkg=mocks
 type Logger interface {
-	Debug(msg string, args ...any)
-	Info(msg string, args ...any)
-	Warn(msg string, args ...any)
-	Error(msg string, err error, args ...any)
+	Debug(msg string)
+	Info(msg string)
+	Warn(msg string)
+	Error(msg string, err error)
 	DebugWithAttrs(msg string, fields Attrs)
 	InfoWithAttrs(msg string, fields Attrs)
 	WarnWithAttrs(msg string, fields Attrs)
@@ -42,20 +42,20 @@ func NewLogger(w io.Writer, optManager *OptionManager, level Level) Logger {
 	}
 }
 
-func (l Log) Debug(msg string, args ...any) {
-	l.slogLogger.Debug(msg, args...)
+func (l Log) Debug(msg string) {
+	l.slogLogger.Debug(msg)
 }
 
-func (l Log) Info(msg string, args ...any) {
-	l.slogLogger.Info(msg, args...)
+func (l Log) Info(msg string) {
+	l.slogLogger.Info(msg)
 }
 
-func (l Log) Warn(msg string, args ...any) {
-	l.slogLogger.Warn(msg, args...)
+func (l Log) Warn(msg string) {
+	l.slogLogger.Warn(msg)
 }
 
-func (l Log) Error(msg string, err error, args ...any) {
-	l.slogLogger.Error(msg, err, args...)
+func (l Log) Error(msg string, err error) {
+	l.slogLogger.Error(msg, err)
 }
 
 func (l Log) DebugWithAttrs(msg string, fields Attrs) {

@@ -1,8 +1,6 @@
 package stdlog
 
-import (
-	"golang.org/x/exp/slog"
-)
+import "golang.org/x/exp/slog"
 
 // An Attrs is a key-value pair.
 type Attrs map[string]interface{}

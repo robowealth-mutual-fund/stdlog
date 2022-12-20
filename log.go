@@ -1,11 +1,12 @@
 package stdlog
 
 import (
-	"github.com/robowealth-mutual-fund/stdlog/internal/constants"
 	"io"
 	"os"
 
 	"golang.org/x/exp/slog"
+
+	"github.com/robowealth-mutual-fund/stdlog/internal/constants"
 )
 
 var (
@@ -15,25 +16,25 @@ var (
 	logWriter = new(io.Writer)
 )
 
-func Debug(msg string, args ...any) {
-	log.Debug(msg, args...)
+func Debug2(msg string) {
+	log.Debug(msg)
 }
 
-func Info(msg string, args ...any) {
-	log.Info(msg, args...)
+func Debug(msg string) {
+	log.Debug(msg)
 }
 
-func Warn(msg string, args ...any) {
-	log.Warn(msg, args...)
+func Info(msg string) {
+	log.Info(msg)
 }
 
-func Error(msg string, err error, args ...any) {
-	log.Error(msg, err, args...)
+func Warn(msg string) {
+	log.Warn(msg)
 }
 
-//func LogAttrs(msg string, fields Attrs) {
-//	log.LogAttrs(levelVar.Level(), msg, fields.convert()...)
-//}
+func Error(msg string, err error) {
+	log.Error(msg, err)
+}
 
 func DebugWithAttrs(msg string, fields Attrs) {
 	log.LogAttrs(DEBUG_LEVEL.Level(), msg, fields.convert()...)

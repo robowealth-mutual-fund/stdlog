@@ -1,8 +1,9 @@
 package main
 
 import (
-	log "github.com/robowealth-mutual-fund/stdlog"
 	"os"
+
+	log "github.com/robowealth-mutual-fund/stdlog"
 )
 
 func main() {
