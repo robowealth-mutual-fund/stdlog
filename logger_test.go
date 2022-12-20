@@ -142,7 +142,7 @@ func (s *packageTestSuite) TestNewLogErrorLevel() {
 		{key: "level", val: "ERROR"},
 		{key: constants.MESSAGE_KEY, val: "test"},
 		{key: "platform_name", val: "Finvest"},
-		{key: "err", val: givenErr.Error()},
+		{key: constants.ERROR_KEY, val: givenErr.Error()},
 	}
 
 	// Check key exist

@@ -10,3 +10,7 @@ func SetGlobalLogLevel(level Level) {
 	logLevel = level
 	levelVar.Set(logLevel.Level())
 }
+
+func SetEnabledReportCaller() {
+	reportCaller = true
+}
