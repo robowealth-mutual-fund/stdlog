@@ -7,33 +7,27 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/robowealth-mutual-fund/stdlog/internal/constants"
 )
 
-type optionManagerTestSuite struct {
-	suite.Suite
-}
-
-func TestOptionManagerTestSuite(t *testing.T) {
-	suite.Run(t, new(optionManagerTestSuite))
-}
-
-func (s *optionManagerTestSuite) TestNewOptionManager() {
+func (s *packageTestSuite) TestNewOptionManager() {
 	optManager := &OptionManager{
 		JSONFieldFormatter: &JSONFieldFormatter{
-			PlatformNameKey: PLATFORM_NAME_KEY,
+			PlatformNameKey: constants.PLATFORM_NAME_KEY,
 		},
 	}
 	assert.NotNil(s.T(), optManager)
 }
 
-func (s *optionManagerTestSuite) TestDisabledPlatformNameKey() {
+func (s *packageTestSuite) TestDisabledPlatformNameKey() {
 	var buf bytes.Buffer
 
 	lg := NewLogger(&buf, &OptionManager{
 		DisabledPlatformNameKey: true,
 		PlatformName:            "Finvest",
 		JSONFieldFormatter:      &JSONFieldFormatter{},
-	})
+	}, 0)
 	lg.Warn("test")
 
 	var result map[string]interface{}
@@ -59,7 +53,7 @@ func (s *optionManagerTestSuite) TestDisabledPlatformNameKey() {
 	}
 }
 
-func (s *optionManagerTestSuite) TestGetPlatformNameKey() {
+func (s *packageTestSuite) TestGetPlatformNameKey() {
 	const givenPlatformNameVal = "Finvest"
 	optManager := &OptionManager{
 		PlatformName:       givenPlatformNameVal,
@@ -76,19 +70,19 @@ func TestJSONFieldFormatterTestSuite(t *testing.T) {
 	suite.Run(t, new(jsonFieldFormatterTestSuite))
 }
 
-func (s *optionManagerTestSuite) TestNewJSONFieldFormatter() {
+func (s *packageTestSuite) TestNewJSONFieldFormatter() {
 	jsonFieldFormatter := &JSONFieldFormatter{}
 	assert.NotNil(s.T(), jsonFieldFormatter)
 }
 
-func (s *optionManagerTestSuite) TestNewJSONFieldFormatterWithPlatformNameDefault() {
+func (s *packageTestSuite) TestNewJSONFieldFormatterWithPlatformNameDefault() {
 	var buf bytes.Buffer
 	const givenPlatformNameKey = "platform_name"
 
 	lg := NewLogger(&buf, &OptionManager{
 		PlatformName:       "Finvest",
 		JSONFieldFormatter: &JSONFieldFormatter{},
-	})
+	}, 0)
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -101,7 +95,7 @@ func (s *optionManagerTestSuite) TestNewJSONFieldFormatterWithPlatformNameDefaul
 		val string
 	}{
 		{key: "level", val: "INFO"},
-		{key: "msg", val: "test"},
+		{key: constants.MESSAGE_KEY, val: "test"},
 		{key: givenPlatformNameKey, val: "Finvest"},
 	}
 
@@ -116,14 +110,14 @@ func (s *optionManagerTestSuite) TestNewJSONFieldFormatterWithPlatformNameDefaul
 	}
 }
 
-func (s *optionManagerTestSuite) TestNewJSONFieldFormatterWithPlatformNameNotDefault() {
+func (s *packageTestSuite) TestNewJSONFieldFormatterWithPlatformNameNotDefault() {
 	var buf bytes.Buffer
 	const givenPlatformNameKey = "app_name"
 
 	lg := NewLogger(&buf, &OptionManager{
 		PlatformName:       "Finvest",
 		JSONFieldFormatter: &JSONFieldFormatter{PlatformNameKey: givenPlatformNameKey},
-	})
+	}, 0)
 	lg.Info("test")
 
 	var result map[string]interface{}
@@ -136,7 +130,7 @@ func (s *optionManagerTestSuite) TestNewJSONFieldFormatterWithPlatformNameNotDef
 		val string
 	}{
 		{key: "level", val: "INFO"},
-		{key: "msg", val: "test"},
+		{key: constants.MESSAGE_KEY, val: "test"},
 		{key: givenPlatformNameKey, val: "Finvest"},
 	}
 

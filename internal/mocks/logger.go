@@ -12,41 +12,44 @@ type Logger struct {
 	mock.Mock
 }
 
-// Debug provides a mock function with given fields: msg, args
-func (_m *Logger) Debug(msg string, args ...interface{}) {
-	var _ca []interface{}
-	_ca = append(_ca, msg)
-	_ca = append(_ca, args...)
-	_m.Called(_ca...)
+// Debug provides a mock function with given fields: msg
+func (_m *Logger) Debug(msg string) {
+	_m.Called(msg)
 }
 
-// Error provides a mock function with given fields: msg, err, args
-func (_m *Logger) Error(msg string, err error, args ...interface{}) {
-	var _ca []interface{}
-	_ca = append(_ca, msg, err)
-	_ca = append(_ca, args...)
-	_m.Called(_ca...)
+// DebugWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) DebugWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
 }
 
-// Info provides a mock function with given fields: msg, args
-func (_m *Logger) Info(msg string, args ...interface{}) {
-	var _ca []interface{}
-	_ca = append(_ca, msg)
-	_ca = append(_ca, args...)
-	_m.Called(_ca...)
+// Error provides a mock function with given fields: msg, err
+func (_m *Logger) Error(msg string, err error) {
+	_m.Called(msg, err)
 }
 
-// LogAttrs provides a mock function with given fields: level, msg, fields
-func (_m *Logger) LogAttrs(level stdlog.Level, msg string, fields stdlog.Attrs) {
-	_m.Called(level, msg, fields)
+// ErrorWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) ErrorWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
 }
 
-// Warn provides a mock function with given fields: msg, args
-func (_m *Logger) Warn(msg string, args ...interface{}) {
-	var _ca []interface{}
-	_ca = append(_ca, msg)
-	_ca = append(_ca, args...)
-	_m.Called(_ca...)
+// Info provides a mock function with given fields: msg
+func (_m *Logger) Info(msg string) {
+	_m.Called(msg)
+}
+
+// InfoWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) InfoWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
+}
+
+// Warn provides a mock function with given fields: msg
+func (_m *Logger) Warn(msg string) {
+	_m.Called(msg)
+}
+
+// WarnWithAttrs provides a mock function with given fields: msg, fields
+func (_m *Logger) WarnWithAttrs(msg string, fields stdlog.Attrs) {
+	_m.Called(msg, fields)
 }
 
 type mockConstructorTestingTNewLogger interface {

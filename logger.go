@@ -8,18 +8,21 @@ import (
 
 //go:generate mockery --dir=./ --name=Logger --filename=logger.go --output=internal/mocks --outpkg=mocks
 type Logger interface {
-	Info(msg string, args ...any)
-	Debug(msg string, args ...any)
-	Error(msg string, err error, args ...any)
-	LogAttrs(level Level, msg string, fields Attrs)
-	Warn(msg string, args ...any)
+	Debug(msg string)
+	Info(msg string)
+	Warn(msg string)
+	Error(msg string, err error)
+	DebugWithAttrs(msg string, fields Attrs)
+	InfoWithAttrs(msg string, fields Attrs)
+	WarnWithAttrs(msg string, fields Attrs)
+	ErrorWithAttrs(msg string, fields Attrs)
 }
 
 type Log struct {
 	slogLogger slog.Logger
 }
 
-func NewLogger(w io.Writer, optManager *OptionManager) Logger {
+func NewLogger(w io.Writer, optManager *OptionManager, level Level) Logger {
 	var attrs []slog.Attr
 
 	if !optManager.DisabledPlatformNameKey {
@@ -30,28 +33,43 @@ func NewLogger(w io.Writer, optManager *OptionManager) Logger {
 	}
 
 	return &Log{
-		slogLogger: slog.New(slog.HandlerOptions{Level: logLevel}.
+		slogLogger: slog.New(slog.HandlerOptions{
+			Level:       slog.Level(level),
+			ReplaceAttr: loadDefaultReplaceAttr(),
+		}.
 			NewJSONHandler(w).
 			WithAttrs(attrs)),
 	}
 }
 
-func (l Log) Debug(msg string, args ...any) {
-	l.slogLogger.Debug(msg, args...)
+func (l Log) Debug(msg string) {
+	l.slogLogger.Debug(msg)
 }
 
-func (l Log) Info(msg string, args ...any) {
-	l.slogLogger.Info(msg, args...)
+func (l Log) Info(msg string) {
+	l.slogLogger.Info(msg)
 }
 
-func (l Log) Warn(msg string, args ...any) {
-	l.slogLogger.Warn(msg, args...)
+func (l Log) Warn(msg string) {
+	l.slogLogger.Warn(msg)
 }
 
-func (l Log) Error(msg string, err error, args ...any) {
-	l.slogLogger.Error(msg, err, args...)
+func (l Log) Error(msg string, err error) {
+	l.slogLogger.Error(msg, err)
 }
 
-func (l Log) LogAttrs(level Level, msg string, fields Attrs) {
-	l.slogLogger.LogAttrs(slog.Level(level), msg, fields.convert()...)
+func (l Log) DebugWithAttrs(msg string, fields Attrs) {
+	l.slogLogger.LogAttrs(slog.Level(DEBUG_LEVEL), msg, fields.convert()...)
+}
+
+func (l Log) InfoWithAttrs(msg string, fields Attrs) {
+	l.slogLogger.LogAttrs(slog.Level(INFO_LEVEL), msg, fields.convert()...)
+}
+
+func (l Log) WarnWithAttrs(msg string, fields Attrs) {
+	l.slogLogger.LogAttrs(slog.Level(WARN_LEVEL), msg, fields.convert()...)
+}
+
+func (l Log) ErrorWithAttrs(msg string, fields Attrs) {
+	l.slogLogger.LogAttrs(slog.Level(ERROR_LEVEL), msg, fields.convert()...)
 }
