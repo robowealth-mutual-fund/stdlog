@@ -7,6 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/slog"
+
+	"github.com/robowealth-mutual-fund/stdlog/internal/constants"
 )
 
 func (s *packageTestSuite) TestGlobalInstanceLogDebugLevel() {
@@ -14,7 +16,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogDebugLevel() {
 
 	SetGlobalLogLevel(DEBUG_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	Debug("test")
 
 	var result map[string]interface{}
@@ -26,8 +28,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogDebugLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "DEBUG"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "DEBUG"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 	}
 
 	// Check key exist
@@ -46,7 +48,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogInfoLevel() {
 
 	SetGlobalLogLevel(INFO_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	Info("test")
 
 	var result map[string]interface{}
@@ -58,8 +60,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogInfoLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "INFO"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "INFO"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 	}
 
 	// Check key exist
@@ -78,7 +80,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogWarnLevel() {
 
 	SetGlobalLogLevel(WARN_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	Warn("test")
 
 	var result map[string]interface{}
@@ -90,8 +92,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogWarnLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "WARN"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "WARN"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 	}
 
 	// Check key exist
@@ -111,7 +113,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogErrorLevel() {
 
 	SetGlobalLogLevel(ERROR_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -123,8 +125,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogErrorLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "ERROR"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "ERROR"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 	}
 
 	// Check key exist
@@ -143,7 +145,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrDebugLevel() {
 
 	SetGlobalLogLevel(DEBUG_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	DebugWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
@@ -155,8 +157,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrDebugLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "DEBUG"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "DEBUG"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 		{key: "attr_key_1", val: "attr value 1"},
 	}
 
@@ -176,7 +178,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrInfoLevel() {
 
 	SetGlobalLogLevel(INFO_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	InfoWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
@@ -188,8 +190,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrInfoLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "INFO"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "INFO"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 		{key: "attr_key_1", val: "attr value 1"},
 	}
 
@@ -209,7 +211,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrWarnLevel() {
 
 	SetGlobalLogLevel(WARN_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
+	SetGlobalApplicationName("Test")
 	WarnWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
@@ -221,8 +223,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrWarnLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "WARN"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "WARN"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 		{key: "attr_key_1", val: "attr value 1"},
 	}
 
@@ -242,8 +244,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrErrorLevel() {
 
 	SetGlobalLogLevel(ERROR_LEVEL)
 	loadDefaultLoggerTest(&buf)
-	SetGlobalPlatformName("Test")
-	ErrorWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
+	SetGlobalApplicationName("Test")
+	ErrorWithAttrs("test", errors.New("test error"), Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -254,8 +256,8 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrErrorLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "ERROR"},
-		{key: "platform_name", val: "Test"},
+		{key: constants.LEVEL_KEY, val: "ERROR"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Test"},
 		{key: "attr_key_1", val: "attr value 1"},
 	}
 
@@ -364,7 +366,7 @@ func (s *packageTestSuite) TestGlobalInstanceLogAttrsErrorLevelWithSilent() {
 	var buf bytes.Buffer
 
 	SetGlobalLogLevel(SILENT_LEVEL)
-	ErrorWithAttrs("test", Attrs{"attr_key_1": "attr value 1"})
+	ErrorWithAttrs("test", errors.New("test error"), Attrs{"attr_key_1": "attr value 1"})
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {

@@ -12,19 +12,14 @@ import (
 )
 
 func (s *packageTestSuite) TestNewLogger() {
-	l := NewLogger(os.Stdout, &OptionManager{
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(os.Stdout, DEBUG_LEVEL, "Finvest")
 	assert.NotNil(s.T(), l)
 }
 
 func (s *packageTestSuite) TestNewLogDebugLevel() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, DEBUG_LEVEL)
+	l := NewLogger(&buf, DEBUG_LEVEL, "Finvest")
 	l.Debug("test")
 
 	var result map[string]interface{}
@@ -36,9 +31,9 @@ func (s *packageTestSuite) TestNewLogDebugLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "DEBUG"},
+		{key: constants.LEVEL_KEY, val: "DEBUG"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 	}
 
 	// Check key exist
@@ -55,10 +50,7 @@ func (s *packageTestSuite) TestNewLogDebugLevel() {
 func (s *packageTestSuite) TestNewLogInfoLevel() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, INFO_LEVEL)
+	l := NewLogger(&buf, INFO_LEVEL, "Finvest")
 	l.Info("test")
 
 	var result map[string]interface{}
@@ -70,9 +62,9 @@ func (s *packageTestSuite) TestNewLogInfoLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "INFO"},
+		{key: constants.LEVEL_KEY, val: "INFO"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 	}
 
 	// Check key exist
@@ -89,10 +81,7 @@ func (s *packageTestSuite) TestNewLogInfoLevel() {
 func (s *packageTestSuite) TestNewLogWarnLevel() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, WARN_LEVEL)
+	l := NewLogger(&buf, WARN_LEVEL, "Finvest")
 	l.Warn("test")
 
 	var result map[string]interface{}
@@ -104,9 +93,9 @@ func (s *packageTestSuite) TestNewLogWarnLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "WARN"},
+		{key: constants.LEVEL_KEY, val: "WARN"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 	}
 
 	// Check key exist
@@ -124,10 +113,7 @@ func (s *packageTestSuite) TestNewLogErrorLevel() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, ERROR_LEVEL)
+	l := NewLogger(&buf, ERROR_LEVEL, "Finvest")
 	l.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -139,10 +125,10 @@ func (s *packageTestSuite) TestNewLogErrorLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "ERROR"},
+		{key: constants.LEVEL_KEY, val: "ERROR"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
-		{key: "err", val: givenErr.Error()},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
+		{key: constants.ERROR_KEY, val: givenErr.Error()},
 	}
 
 	// Check key exist
@@ -160,10 +146,7 @@ func (s *packageTestSuite) TestNewLogAttrsDebugLevel() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_1": "attr value 1"}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, DEBUG_LEVEL)
+	l := NewLogger(&buf, DEBUG_LEVEL, "Finvest")
 	l.DebugWithAttrs("test", givenAttrs)
 
 	var result map[string]interface{}
@@ -175,9 +158,9 @@ func (s *packageTestSuite) TestNewLogAttrsDebugLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "DEBUG"},
+		{key: constants.LEVEL_KEY, val: "DEBUG"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 		{key: "attr_1", val: "attr value 1"},
 	}
 
@@ -196,10 +179,7 @@ func (s *packageTestSuite) TestNewLogAttrsInfoLevel() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_1": "attr value 1"}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, INFO_LEVEL)
+	l := NewLogger(&buf, INFO_LEVEL, "Finvest")
 	l.InfoWithAttrs("test", givenAttrs)
 
 	var result map[string]interface{}
@@ -211,9 +191,9 @@ func (s *packageTestSuite) TestNewLogAttrsInfoLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "INFO"},
+		{key: constants.LEVEL_KEY, val: "INFO"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 		{key: "attr_1", val: "attr value 1"},
 	}
 
@@ -232,10 +212,7 @@ func (s *packageTestSuite) TestNewLogAttrsWarnLevel() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_1": "attr value 1"}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, WARN_LEVEL)
+	l := NewLogger(&buf, WARN_LEVEL, "Finvest")
 	l.WarnWithAttrs("test", givenAttrs)
 
 	var result map[string]interface{}
@@ -247,9 +224,9 @@ func (s *packageTestSuite) TestNewLogAttrsWarnLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "WARN"},
+		{key: constants.LEVEL_KEY, val: "WARN"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 		{key: "attr_1", val: "attr value 1"},
 	}
 
@@ -269,11 +246,8 @@ func (s *packageTestSuite) TestNewLogAttrsErrorLevel() {
 	givenErr := errors.New("attr error value 1")
 	givenAttrs := Attrs{"attr_err_1": givenErr}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, ERROR_LEVEL)
-	l.ErrorWithAttrs("test", givenAttrs)
+	l := NewLogger(&buf, ERROR_LEVEL, "Finvest")
+	l.ErrorWithAttrs("test", errors.New("test error"), givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -284,9 +258,9 @@ func (s *packageTestSuite) TestNewLogAttrsErrorLevel() {
 		key string
 		val string
 	}{
-		{key: "level", val: "ERROR"},
+		{key: constants.LEVEL_KEY, val: "ERROR"},
 		{key: constants.MESSAGE_KEY, val: "test"},
-		{key: "platform_name", val: "Finvest"},
+		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
 		{key: "attr_err_1", val: "attr error value 1"},
 	}
 
@@ -304,10 +278,7 @@ func (s *packageTestSuite) TestNewLogAttrsErrorLevel() {
 func (s *packageTestSuite) TestLogDebugLevelWithSilent() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "Finvest")
 	l.Debug("test")
 
 	var result map[string]interface{}
@@ -319,10 +290,7 @@ func (s *packageTestSuite) TestLogDebugLevelWithSilent() {
 func (s *packageTestSuite) TestLogInfoLevelWithSilent() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "Finvest")
 	l.Info("test")
 
 	var result map[string]interface{}
@@ -334,10 +302,7 @@ func (s *packageTestSuite) TestLogInfoLevelWithSilent() {
 func (s *packageTestSuite) TestLogWarnLevelWithSilent() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "Finvest")
 	l.Warn("test")
 
 	var result map[string]interface{}
@@ -350,10 +315,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithSilent() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "test")
 	l.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -366,10 +328,7 @@ func (s *packageTestSuite) TestLogAttrsDebugLevelWithSilent() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_key_1": "attr value 1"}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "test")
 	l.DebugWithAttrs("test", givenAttrs)
 
 	var result map[string]interface{}
@@ -382,10 +341,7 @@ func (s *packageTestSuite) TestLogAttrsInfoLevelWithSilent() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_key_1": "attr value 1"}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "test")
 	l.InfoWithAttrs("test", givenAttrs)
 
 	var result map[string]interface{}
@@ -398,10 +354,7 @@ func (s *packageTestSuite) TestLogAttrsWarnLevelWithSilent() {
 	var buf bytes.Buffer
 	givenAttrs := Attrs{"attr_key_1": "attr value 1"}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, SILENT_LEVEL, "test")
 	l.WarnWithAttrs("test", givenAttrs)
 
 	var result map[string]interface{}
@@ -415,11 +368,8 @@ func (s *packageTestSuite) TestLogAttrsErrorLevelWithSilent() {
 	givenErr := errors.New("something went wrong")
 	givenAttrs := Attrs{"attr_err_key_1": givenErr}
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
-	l.ErrorWithAttrs("test", givenAttrs)
+	l := NewLogger(&buf, SILENT_LEVEL, "test")
+	l.ErrorWithAttrs("test", errors.New("test error"), givenAttrs)
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -430,10 +380,7 @@ func (s *packageTestSuite) TestLogAttrsErrorLevelWithSilent() {
 func (s *packageTestSuite) TestLogDebugLevelWithDebug() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, DEBUG_LEVEL, "test")
 	l.Debug("test")
 
 	var result map[string]interface{}
@@ -445,10 +392,7 @@ func (s *packageTestSuite) TestLogDebugLevelWithDebug() {
 func (s *packageTestSuite) TestLogDebugLevelWithInfo() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, INFO_LEVEL, "test")
 	l.Debug("test")
 
 	var result map[string]interface{}
@@ -460,10 +404,7 @@ func (s *packageTestSuite) TestLogDebugLevelWithInfo() {
 func (s *packageTestSuite) TestLogDebugLevelWithWarn() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, WARN_LEVEL, "test")
 	l.Debug("test")
 
 	var result map[string]interface{}
@@ -475,10 +416,7 @@ func (s *packageTestSuite) TestLogDebugLevelWithWarn() {
 func (s *packageTestSuite) TestLogDebugLevelWithError() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, ERROR_LEVEL, "test")
 	l.Debug("test")
 
 	var result map[string]interface{}
@@ -490,10 +428,7 @@ func (s *packageTestSuite) TestLogDebugLevelWithError() {
 func (s *packageTestSuite) TestLogInfoLevelWithDebug() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, DEBUG_LEVEL, "test")
 	l.Info("test")
 
 	var result map[string]interface{}
@@ -505,10 +440,7 @@ func (s *packageTestSuite) TestLogInfoLevelWithDebug() {
 func (s *packageTestSuite) TestLogInfoLevelWithInfo() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, INFO_LEVEL, "test")
 	l.Info("test")
 
 	var result map[string]interface{}
@@ -520,10 +452,7 @@ func (s *packageTestSuite) TestLogInfoLevelWithInfo() {
 func (s *packageTestSuite) TestLogInfoLevelWithWarn() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, WARN_LEVEL, "test")
 	l.Info("test")
 
 	var result map[string]interface{}
@@ -535,10 +464,7 @@ func (s *packageTestSuite) TestLogInfoLevelWithWarn() {
 func (s *packageTestSuite) TestLogInfoLevelWithError() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, ERROR_LEVEL, "test")
 	l.Info("test")
 
 	var result map[string]interface{}
@@ -550,10 +476,7 @@ func (s *packageTestSuite) TestLogInfoLevelWithError() {
 func (s *packageTestSuite) TestLogWarnLevelWithDebug() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, DEBUG_LEVEL, "test")
 	l.Warn("test")
 
 	var result map[string]interface{}
@@ -565,10 +488,7 @@ func (s *packageTestSuite) TestLogWarnLevelWithDebug() {
 func (s *packageTestSuite) TestLogWarnLevelWithInfo() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, INFO_LEVEL, "test")
 	l.Warn("test")
 
 	var result map[string]interface{}
@@ -580,10 +500,7 @@ func (s *packageTestSuite) TestLogWarnLevelWithInfo() {
 func (s *packageTestSuite) TestLogWarnLevelWithWarn() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, WARN_LEVEL, "test")
 	l.Warn("test")
 
 	var result map[string]interface{}
@@ -595,10 +512,7 @@ func (s *packageTestSuite) TestLogWarnLevelWithWarn() {
 func (s *packageTestSuite) TestLogWarnLevelWithError() {
 	var buf bytes.Buffer
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, ERROR_LEVEL, "test")
 	l.Warn("test")
 
 	var result map[string]interface{}
@@ -611,10 +525,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithDebug() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, DEBUG_LEVEL, "test")
 	l.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -627,10 +538,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithInfo() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, INFO_LEVEL, "test")
 	l.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -643,10 +551,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithWarn() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, WARN_LEVEL, "test")
 	l.Error("test", givenErr)
 
 	var result map[string]interface{}
@@ -659,10 +564,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithError() {
 	var buf bytes.Buffer
 	givenErr := errors.New("something went wrong")
 
-	l := NewLogger(&buf, &OptionManager{
-		PlatformName:       "Finvest",
-		JSONFieldFormatter: &JSONFieldFormatter{},
-	}, 0)
+	l := NewLogger(&buf, ERROR_LEVEL, "test")
 	l.Error("test", givenErr)
 
 	var result map[string]interface{}
