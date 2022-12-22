@@ -15,12 +15,8 @@ var (
 	reportCaller bool
 )
 
-func IsEnabledReportCaller() bool {
-	return reportCaller
-}
-
 func Debug(msg string) {
-	if reportCaller {
+	if ReportCaller() {
 		log.LogAttrs(DEBUG_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
@@ -29,7 +25,7 @@ func Debug(msg string) {
 }
 
 func Info(msg string) {
-	if IsEnabledReportCaller() {
+	if ReportCaller() {
 		log.LogAttrs(INFO_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
@@ -38,7 +34,7 @@ func Info(msg string) {
 }
 
 func Warn(msg string) {
-	if IsEnabledReportCaller() {
+	if ReportCaller() {
 		log.LogAttrs(WARN_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
@@ -47,7 +43,7 @@ func Warn(msg string) {
 }
 
 func Error(msg string, err error) {
-	if IsEnabledReportCaller() {
+	if ReportCaller() {
 		log.LogAttrs(ERROR_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
@@ -55,44 +51,46 @@ func Error(msg string, err error) {
 	log.Error(msg, err)
 }
 
-func DebugWithAttrs(msg string, fields Attrs) {
-	if IsEnabledReportCaller() {
-		fields[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(DEBUG_LEVEL.Level(), msg, fields.convert()...)
+func DebugWithAttrs(msg string, attrs Attrs) {
+	if ReportCaller() {
+		attrs[constants.CALLER_KEY] = getCaller()
+		log.LogAttrs(DEBUG_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(DEBUG_LEVEL.Level(), msg, fields.convert()...)
+	log.LogAttrs(DEBUG_LEVEL.Level(), msg, attrs.convert()...)
 }
 
-func InfoWithAttrs(msg string, fields Attrs) {
-	if IsEnabledReportCaller() {
-		fields[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(INFO_LEVEL.Level(), msg, fields.convert()...)
+func InfoWithAttrs(msg string, attrs Attrs) {
+	if ReportCaller() {
+		attrs[constants.CALLER_KEY] = getCaller()
+		log.LogAttrs(INFO_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(INFO_LEVEL.Level(), msg, fields.convert()...)
+	log.LogAttrs(INFO_LEVEL.Level(), msg, attrs.convert()...)
 }
 
-func WarnWithAttrs(msg string, fields Attrs) {
-	if IsEnabledReportCaller() {
-		fields[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(WARN_LEVEL.Level(), msg, fields.convert()...)
+func WarnWithAttrs(msg string, attrs Attrs) {
+	if ReportCaller() {
+		attrs[constants.CALLER_KEY] = getCaller()
+		log.LogAttrs(WARN_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(WARN_LEVEL.Level(), msg, fields.convert()...)
+	log.LogAttrs(WARN_LEVEL.Level(), msg, attrs.convert()...)
 }
 
-func ErrorWithAttrs(msg string, fields Attrs) {
-	if IsEnabledReportCaller() {
-		fields[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(ERROR_LEVEL.Level(), msg, fields.convert()...)
+func ErrorWithAttrs(msg string, err error, attrs Attrs) {
+	attrs[constants.ERROR_KEY] = err.Error()
+
+	if ReportCaller() {
+		attrs[constants.CALLER_KEY] = getCaller()
+		log.LogAttrs(ERROR_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(ERROR_LEVEL.Level(), msg, fields.convert()...)
+	log.LogAttrs(ERROR_LEVEL.Level(), msg, attrs.convert()...)
 }
 
 func loadDefaultLogger() slog.Logger {
@@ -105,17 +103,17 @@ func loadDefaultLogger() slog.Logger {
 	return slog.New(d.NewJSONHandler(os.Stdout))
 }
 
-func loadDefaultReplaceAttr() func(a slog.Attr) slog.Attr {
-	return func(a slog.Attr) slog.Attr {
-		switch a.Key {
+func loadDefaultReplaceAttr() func(attr slog.Attr) slog.Attr {
+	return func(attr slog.Attr) slog.Attr {
+		switch attr.Key {
 		case constants.DEFAULT_TIMESTAMP_KEY:
-			a.Key = constants.TIMESTAMP_KEY
+			attr.Key = constants.TIMESTAMP_KEY
 		case constants.DEFAULT_MESSAGE_KEY:
-			a.Key = constants.MESSAGE_KEY
+			attr.Key = constants.MESSAGE_KEY
 		case constants.DEFAULT_ERROR_KEY:
-			a.Key = constants.ERROR_KEY
+			attr.Key = constants.ERROR_KEY
 		}
 
-		return a
+		return attr
 	}
 }

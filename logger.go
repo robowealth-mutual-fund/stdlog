@@ -17,30 +17,20 @@ type Logger interface {
 	DebugWithAttrs(msg string, fields Attrs)
 	InfoWithAttrs(msg string, fields Attrs)
 	WarnWithAttrs(msg string, fields Attrs)
-	ErrorWithAttrs(msg string, fields Attrs)
+	ErrorWithAttrs(msg string, err error, attrs Attrs)
 }
 
 type Log struct {
 	slogLogger slog.Logger
 }
 
-func NewLogger(w io.Writer, optManager *OptionManager, level Level) Logger {
-	var attrs []slog.Attr
-
-	if !optManager.DisabledPlatformNameKey {
-		attrs = append(attrs, slog.Any(
-			optManager.JSONFieldFormatter.PlatformNameKeyWithDefault(),
-			optManager.PlatformName,
-		))
-	}
-
+func NewLogger(w io.Writer, level Level, appName string) Logger {
 	return &Log{
 		slogLogger: slog.New(slog.HandlerOptions{
-			Level:       slog.Level(level),
+			Level:       level.Level(),
 			ReplaceAttr: loadDefaultReplaceAttr(),
-		}.
-			NewJSONHandler(w).
-			WithAttrs(attrs)),
+		}.NewJSONHandler(w).
+			WithAttrs([]slog.Attr{slog.Any(constants.APPLICATION_NAME_KEY, appName)})),
 	}
 }
 
@@ -80,42 +70,44 @@ func (l Log) Error(msg string, err error) {
 	l.slogLogger.Error(msg, err)
 }
 
-func (l Log) DebugWithAttrs(msg string, fields Attrs) {
+func (l Log) DebugWithAttrs(msg string, attrs Attrs) {
 	if reportCaller {
-		fields[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(DEBUG_LEVEL.Level(), msg, fields.convert()...)
+		attrs[constants.CALLER_KEY] = getCaller()
+		l.slogLogger.LogAttrs(DEBUG_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(DEBUG_LEVEL), msg, fields.convert()...)
+	l.slogLogger.LogAttrs(slog.Level(DEBUG_LEVEL), msg, attrs.convert()...)
 }
 
-func (l Log) InfoWithAttrs(msg string, fields Attrs) {
+func (l Log) InfoWithAttrs(msg string, attrs Attrs) {
 	if reportCaller {
-		fields[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(INFO_LEVEL.Level(), msg, fields.convert()...)
+		attrs[constants.CALLER_KEY] = getCaller()
+		l.slogLogger.LogAttrs(INFO_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(INFO_LEVEL), msg, fields.convert()...)
+	l.slogLogger.LogAttrs(slog.Level(INFO_LEVEL), msg, attrs.convert()...)
 }
 
-func (l Log) WarnWithAttrs(msg string, fields Attrs) {
+func (l Log) WarnWithAttrs(msg string, attrs Attrs) {
 	if reportCaller {
-		fields[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(WARN_LEVEL.Level(), msg, fields.convert()...)
+		attrs[constants.CALLER_KEY] = getCaller()
+		l.slogLogger.LogAttrs(WARN_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(WARN_LEVEL), msg, fields.convert()...)
+	l.slogLogger.LogAttrs(slog.Level(WARN_LEVEL), msg, attrs.convert()...)
 }
 
-func (l Log) ErrorWithAttrs(msg string, fields Attrs) {
+func (l Log) ErrorWithAttrs(msg string, err error, attrs Attrs) {
+	attrs[constants.ERROR_KEY] = err.Error()
+
 	if reportCaller {
-		fields[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(ERROR_LEVEL.Level(), msg, fields.convert()...)
+		attrs[constants.CALLER_KEY] = getCaller()
+		l.slogLogger.LogAttrs(ERROR_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(ERROR_LEVEL), msg, fields.convert()...)
+	l.slogLogger.LogAttrs(slog.Level(ERROR_LEVEL), msg, attrs.convert()...)
 }

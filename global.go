@@ -2,8 +2,8 @@ package stdlog
 
 import "github.com/robowealth-mutual-fund/stdlog/internal/constants"
 
-func SetGlobalPlatformName(name string) {
-	log = log.With(constants.PLATFORM_NAME_KEY, name)
+func SetGlobalApplicationName(name string) {
+	log = log.With(constants.APPLICATION_NAME_KEY, name)
 }
 
 func SetGlobalLogLevel(level Level) {
@@ -13,4 +13,8 @@ func SetGlobalLogLevel(level Level) {
 
 func SetEnabledReportCaller() {
 	reportCaller = true
+}
+
+func ReportCaller() bool {
+	return reportCaller
 }

@@ -1,11 +1,12 @@
 package constants
 
 const (
-	PLATFORM_NAME_KEY = "platform_name"
-	TIMESTAMP_KEY     = "timestamp"
-	MESSAGE_KEY       = "message"
-	CALLER_KEY        = "caller"
-	ERROR_KEY         = "error"
+	APPLICATION_NAME_KEY = "application_name"
+	TIMESTAMP_KEY        = "timestamp"
+	MESSAGE_KEY          = "message"
+	LEVEL_KEY            = "level"
+	CALLER_KEY           = "caller"
+	ERROR_KEY            = "error"
 
 	// DEFAULT_TIMESTAMP_KEY slog default key
 	DEFAULT_TIMESTAMP_KEY = "time"
