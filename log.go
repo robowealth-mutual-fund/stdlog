@@ -1,6 +1,7 @@
 package stdlog
 
 import (
+	"context"
 	"os"
 
 	"golang.org/x/exp/slog"
@@ -17,7 +18,7 @@ var (
 
 func Debug(msg string) {
 	if ReportCaller() {
-		log.LogAttrs(DEBUG_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		log.LogAttrs(context.Background(), DEBUG_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
@@ -26,7 +27,7 @@ func Debug(msg string) {
 
 func Info(msg string) {
 	if ReportCaller() {
-		log.LogAttrs(INFO_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		log.LogAttrs(context.Background(), INFO_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
@@ -35,7 +36,7 @@ func Info(msg string) {
 
 func Warn(msg string) {
 	if ReportCaller() {
-		log.LogAttrs(WARN_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		log.LogAttrs(context.Background(), WARN_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
@@ -44,7 +45,7 @@ func Warn(msg string) {
 
 func Error(msg string, err error) {
 	if ReportCaller() {
-		log.LogAttrs(ERROR_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		log.LogAttrs(context.Background(), ERROR_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
@@ -54,31 +55,31 @@ func Error(msg string, err error) {
 func DebugWithAttrs(msg string, attrs Attrs) {
 	if ReportCaller() {
 		attrs[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(DEBUG_LEVEL.Level(), msg, attrs.convert()...)
+		log.LogAttrs(context.Background(), DEBUG_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(DEBUG_LEVEL.Level(), msg, attrs.convert()...)
+	log.LogAttrs(context.Background(), DEBUG_LEVEL.Level(), msg, attrs.convert()...)
 }
 
 func InfoWithAttrs(msg string, attrs Attrs) {
 	if ReportCaller() {
 		attrs[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(INFO_LEVEL.Level(), msg, attrs.convert()...)
+		log.LogAttrs(context.Background(), INFO_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(INFO_LEVEL.Level(), msg, attrs.convert()...)
+	log.LogAttrs(context.Background(), INFO_LEVEL.Level(), msg, attrs.convert()...)
 }
 
 func WarnWithAttrs(msg string, attrs Attrs) {
 	if ReportCaller() {
 		attrs[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(WARN_LEVEL.Level(), msg, attrs.convert()...)
+		log.LogAttrs(context.Background(), WARN_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(WARN_LEVEL.Level(), msg, attrs.convert()...)
+	log.LogAttrs(context.Background(), WARN_LEVEL.Level(), msg, attrs.convert()...)
 }
 
 func ErrorWithAttrs(msg string, err error, attrs Attrs) {
@@ -86,14 +87,14 @@ func ErrorWithAttrs(msg string, err error, attrs Attrs) {
 
 	if ReportCaller() {
 		attrs[constants.CALLER_KEY] = getCaller()
-		log.LogAttrs(ERROR_LEVEL.Level(), msg, attrs.convert()...)
+		log.LogAttrs(context.Background(), ERROR_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	log.LogAttrs(ERROR_LEVEL.Level(), msg, attrs.convert()...)
+	log.LogAttrs(context.Background(), ERROR_LEVEL.Level(), msg, attrs.convert()...)
 }
 
-func loadDefaultLogger() slog.Logger {
+func loadDefaultLogger() *slog.Logger {
 	levelVar.Set(logLevel.Level())
 	d := &slog.HandlerOptions{
 		Level:       levelVar,
@@ -103,8 +104,8 @@ func loadDefaultLogger() slog.Logger {
 	return slog.New(d.NewJSONHandler(os.Stdout))
 }
 
-func loadDefaultReplaceAttr() func(attr slog.Attr) slog.Attr {
-	return func(attr slog.Attr) slog.Attr {
+func loadDefaultReplaceAttr() func(groups []string, attr slog.Attr) slog.Attr {
+	return func(groups []string, attr slog.Attr) slog.Attr {
 		switch attr.Key {
 		case constants.DEFAULT_TIMESTAMP_KEY:
 			attr.Key = constants.TIMESTAMP_KEY

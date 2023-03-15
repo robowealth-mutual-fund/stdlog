@@ -1,6 +1,7 @@
 package stdlog
 
 import (
+	"context"
 	"io"
 
 	"golang.org/x/exp/slog"
@@ -13,7 +14,7 @@ type Logger interface {
 	Debug(msg string)
 	Info(msg string)
 	Warn(msg string)
-	Error(msg string, err error)
+	Error(msg string)
 	DebugWithAttrs(msg string, fields Attrs)
 	InfoWithAttrs(msg string, fields Attrs)
 	WarnWithAttrs(msg string, fields Attrs)
@@ -21,7 +22,7 @@ type Logger interface {
 }
 
 type Log struct {
-	slogLogger slog.Logger
+	slogLogger *slog.Logger
 }
 
 func NewLogger(w io.Writer, level Level, appName string) Logger {
@@ -36,7 +37,7 @@ func NewLogger(w io.Writer, level Level, appName string) Logger {
 
 func (l Log) Debug(msg string) {
 	if reportCaller {
-		l.slogLogger.LogAttrs(DEBUG_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), DEBUG_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
@@ -45,7 +46,7 @@ func (l Log) Debug(msg string) {
 
 func (l Log) Info(msg string) {
 	if reportCaller {
-		l.slogLogger.LogAttrs(INFO_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), INFO_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
@@ -54,50 +55,50 @@ func (l Log) Info(msg string) {
 
 func (l Log) Warn(msg string) {
 	if reportCaller {
-		l.slogLogger.LogAttrs(WARN_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), WARN_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
 	l.slogLogger.Warn(msg)
 }
 
-func (l Log) Error(msg string, err error) {
+func (l Log) Error(msg string) {
 	if reportCaller {
-		l.slogLogger.LogAttrs(ERROR_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), ERROR_LEVEL.Level(), msg, Attrs{constants.CALLER_KEY: getCaller()}.convert()...)
 		return
 	}
 
-	l.slogLogger.Error(msg, err)
+	l.slogLogger.Error(msg)
 }
 
 func (l Log) DebugWithAttrs(msg string, attrs Attrs) {
 	if reportCaller {
 		attrs[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(DEBUG_LEVEL.Level(), msg, attrs.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), DEBUG_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(DEBUG_LEVEL), msg, attrs.convert()...)
+	l.slogLogger.LogAttrs(context.Background(), slog.Level(DEBUG_LEVEL), msg, attrs.convert()...)
 }
 
 func (l Log) InfoWithAttrs(msg string, attrs Attrs) {
 	if reportCaller {
 		attrs[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(INFO_LEVEL.Level(), msg, attrs.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), INFO_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(INFO_LEVEL), msg, attrs.convert()...)
+	l.slogLogger.LogAttrs(context.Background(), slog.Level(INFO_LEVEL), msg, attrs.convert()...)
 }
 
 func (l Log) WarnWithAttrs(msg string, attrs Attrs) {
 	if reportCaller {
 		attrs[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(WARN_LEVEL.Level(), msg, attrs.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), WARN_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(WARN_LEVEL), msg, attrs.convert()...)
+	l.slogLogger.LogAttrs(context.Background(), slog.Level(WARN_LEVEL), msg, attrs.convert()...)
 }
 
 func (l Log) ErrorWithAttrs(msg string, err error, attrs Attrs) {
@@ -105,9 +106,9 @@ func (l Log) ErrorWithAttrs(msg string, err error, attrs Attrs) {
 
 	if reportCaller {
 		attrs[constants.CALLER_KEY] = getCaller()
-		l.slogLogger.LogAttrs(ERROR_LEVEL.Level(), msg, attrs.convert()...)
+		l.slogLogger.LogAttrs(context.Background(), ERROR_LEVEL.Level(), msg, attrs.convert()...)
 		return
 	}
 
-	l.slogLogger.LogAttrs(slog.Level(ERROR_LEVEL), msg, attrs.convert()...)
+	l.slogLogger.LogAttrs(context.Background(), slog.Level(ERROR_LEVEL), msg, attrs.convert()...)
 }
