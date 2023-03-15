@@ -114,7 +114,7 @@ func (s *packageTestSuite) TestNewLogErrorLevel() {
 	givenErr := errors.New("something went wrong")
 
 	l := NewLogger(&buf, ERROR_LEVEL, "Finvest")
-	l.Error("test", givenErr)
+	l.Error(givenErr.Error())
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -126,9 +126,8 @@ func (s *packageTestSuite) TestNewLogErrorLevel() {
 		val string
 	}{
 		{key: constants.LEVEL_KEY, val: "ERROR"},
-		{key: constants.MESSAGE_KEY, val: "test"},
+		{key: constants.MESSAGE_KEY, val: givenErr.Error()},
 		{key: constants.APPLICATION_NAME_KEY, val: "Finvest"},
-		{key: constants.ERROR_KEY, val: givenErr.Error()},
 	}
 
 	// Check key exist
@@ -316,7 +315,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithSilent() {
 	givenErr := errors.New("something went wrong")
 
 	l := NewLogger(&buf, SILENT_LEVEL, "test")
-	l.Error("test", givenErr)
+	l.Error(givenErr.Error())
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -526,7 +525,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithDebug() {
 	givenErr := errors.New("something went wrong")
 
 	l := NewLogger(&buf, DEBUG_LEVEL, "test")
-	l.Error("test", givenErr)
+	l.Error(givenErr.Error())
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -539,7 +538,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithInfo() {
 	givenErr := errors.New("something went wrong")
 
 	l := NewLogger(&buf, INFO_LEVEL, "test")
-	l.Error("test", givenErr)
+	l.Error(givenErr.Error())
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -552,7 +551,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithWarn() {
 	givenErr := errors.New("something went wrong")
 
 	l := NewLogger(&buf, WARN_LEVEL, "test")
-	l.Error("test", givenErr)
+	l.Error(givenErr.Error())
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
@@ -565,7 +564,7 @@ func (s *packageTestSuite) TestLogErrorLevelWithError() {
 	givenErr := errors.New("something went wrong")
 
 	l := NewLogger(&buf, ERROR_LEVEL, "test")
-	l.Error("test", givenErr)
+	l.Error(givenErr.Error())
 
 	var result map[string]interface{}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
