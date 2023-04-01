@@ -1,15 +1,12 @@
 package main
 
 import (
-	v1 "git.robodev.co/roa-v2/proto-open-account/pkg/masterData/country/v1"
 	"os"
 
 	log "github.com/robowealth-mutual-fund/stdlog"
 )
 
 func main() {
-	_ = v1.RegisterCountryServiceHandlerClient(nil, nil, nil)
-
 	log.SetGlobalLogLevel(log.DEBUG_LEVEL)
 	log.SetGlobalApplicationName("oa v2")
 	log.SetEnabledReportCaller()
